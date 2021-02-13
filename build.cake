@@ -121,9 +121,16 @@ Task("GenerateReports")
     });
 
 Task("UploadCoverage")
-    .WithCriteria(coverallsToken != null)
+    .WithCriteria(coverallsToken != null && BuildSystem.IsRunningOnGitHubActions)
     .Does(() => 
     {
+        // CI_NAME
+        // CI_BUILD_NUMBER
+        // CI_BUILD_URL
+        // CI_BRANCH
+        // CI_PULL_REQUEST (optional)
+        //var environment = BuildSystem.GitHubActions.Environment;
+
         var settings = new DotNetCoreToolSettings
         {
             DiagnosticOutput = true,
@@ -131,7 +138,13 @@ Task("UploadCoverage")
                 .Append("--lcov")
                 .Append("-i ./artifacts/lcov.info")
                 .Append($"--repoToken {coverallsToken}")
-                .Append("--useRelativePaths")
+                //.Append("--useRelativePaths")
+                //.Append("--commitId ")
+                .Append($"--commitBranch {EnvironmentVariable("GITHUB_REF")}")
+                // .Append("--commitAuthor ")
+                // .Append("--commitMessage ")
+                .Append($"--jobId {EnvironmentVariable("GITHUB_RUN_NUMBER")}")
+                //.Append("--pullRequest ")
                 //.Append("--dryrun")
         };
 
