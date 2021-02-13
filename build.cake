@@ -132,7 +132,7 @@ Task("UploadCoverage")
                 .Append("-i ./artifacts/lcov.info")
                 .Append($"--repoToken {coverallsToken}")
                 .Append("--useRelativePaths")
-                .Append("--dryrun")
+                //.Append("--dryrun")
         };
 
         DotNetCoreTool("csmacnz.Coveralls", settings);
