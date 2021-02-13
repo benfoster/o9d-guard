@@ -5,6 +5,9 @@
     <!-- Enable nullable and treat their warnings as errors -->
     <Nullable>enable</Nullable>
     <WarningsAsErrors>nullable;</WarningsAsErrors>
+    <EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
+  </PropertyGroup>
+  <PropertyGroup>
     <Authors>@benfoster</Authors>
     <Company>o9d</Company>
     <PackageProjectUrl>https://github.com/benfoster/o9d-guard</PackageProjectUrl>

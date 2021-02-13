@@ -33,10 +33,14 @@ Setup(context =>
 
 Teardown(ctx =>
 {
-   DeleteDirectory(tempPath, new DeleteDirectorySettings {
-      Recursive = true,
-      Force = true
-   });
+   if (DirectoryExists(tempPath))
+   {
+        DeleteDirectory(tempPath, new DeleteDirectorySettings 
+        {
+            Recursive = true,
+            Force = true
+        });
+   }
    
    Information("Finished running build");
 });
