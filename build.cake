@@ -20,6 +20,8 @@ var tempPath = "./artifacts/temp";
 var packFiles = "./src/**/*.csproj";
 var testFiles = "./test/**/*.csproj";
 
+var coverallsToken = EnvironmentVariable("COVERALLS_TOKEN");
+
 uint coverageThreshold = 80;
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -119,9 +121,21 @@ Task("GenerateReports")
     });
 
 Task("UploadCoverage")
+    .WithCriteria(coverallsToken != null)
     .Does(() => 
     {
+        var settings = new DotNetCoreToolSettings
+        {
+            DiagnosticOutput = true,
+            ArgumentCustomization = args => args
+                .Append("--lcov")
+                .Append("-i ./artifacts/lcov.info")
+                .Append($"--repoToken {coverallsToken}")
+                .Append("--useRelativePaths")
+                .Append("--dryrun")
+        };
 
+        DotNetCoreTool("csmacnz.Coveralls", settings);
     });
 
 Task("Default")
@@ -129,7 +143,8 @@ Task("Default")
     .IsDependentOn("Build")
     .IsDependentOn("Test")
     .IsDependentOn("Pack")
-    .IsDependentOn("GenerateReports");
+    .IsDependentOn("GenerateReports")
+    .IsDependentOn("UploadCoverage");
 
 RunTarget(target);
 
