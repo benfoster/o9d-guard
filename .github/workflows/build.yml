@@ -18,5 +18,7 @@ jobs:
           dotnet-version: 5.0.x
       - name: Run the build script
         uses: cake-build/cake-action@v1
+        env:
+          COVERALLS_TOKEN: ${{ secrets.COVERALLS_TOKEN }}
         with:
           target: Default
