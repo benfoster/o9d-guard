@@ -1,0 +1,17 @@
+<Project>
+  <PropertyGroup>
+    <TargetFramework>net5.0</TargetFramework>
+    <LangVersion>latest</LangVersion>
+    <!-- Enable nullable and treat their warnings as errors -->
+    <Nullable>enable</Nullable>
+    <WarningsAsErrors>nullable;</WarningsAsErrors>
+    <Authors>@benfoster</Authors>
+    <Company>o9d</Company>
+    <PackageProjectUrl>https://github.com/benfoster/o9d-guard</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/benfoster/o9d-guard.git</RepositoryUrl>
+    <RepositoryType>git</RepositoryType> 
+  </PropertyGroup>
+  <PropertyGroup Label="MinVer">
+    <MinVerVerbosity>normal</MinVerVerbosity>
+  </PropertyGroup>
+</Project>
