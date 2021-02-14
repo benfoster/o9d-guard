@@ -22,6 +22,7 @@ var artifactsPath = "./artifacts";
 var tempPath = "./artifacts/temp"; 
 var packFiles = "./src/**/*.csproj";
 var testFiles = "./test/**/*.csproj";
+var packages = "./artifacts/*.nupkg";
 
 var coverallsToken = EnvironmentVariable("COVERALLS_TOKEN");
 
@@ -165,6 +166,30 @@ Task("UploadCoverage")
         DotNetCoreTool("csmacnz.Coveralls", settings);
     });
 
+Task("PublishPackages")
+    .Does(() => 
+    {
+        // // Resolve the API key.
+        var apiKey = EnvironmentVariable("NUGET_API_KEY");
+        if(string.IsNullOrEmpty(apiKey)) {
+            throw new InvalidOperationException("Could not resolve NuGet API key.");
+        }
+
+        // Resolve the API url.
+        var apiUrl = EnvironmentVariable("NUGET_API_URL");
+        if(string.IsNullOrEmpty(apiUrl)) {
+            throw new InvalidOperationException("Could not resolve NuGet API url.");
+        }
+
+        foreach(var package in GetFiles(packages))
+        {
+            DotNetCoreNuGetPush(package.ToString(), new DotNetCoreNuGetPushSettings {
+                ApiKey = apiKey,
+                Source = apiUrl
+            });
+        }
+    });
+
 Task("Default")
     .IsDependentOn("Clean")
     .IsDependentOn("Build")
@@ -172,5 +197,9 @@ Task("Default")
     .IsDependentOn("Pack")
     .IsDependentOn("GenerateReports")
     .IsDependentOn("UploadCoverage");
+
+Task("Publish")
+    .IsDependentOn("Default")
+    .IsDependentOn("PublishPackages");
 
 RunTarget(target);
