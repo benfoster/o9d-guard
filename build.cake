@@ -149,9 +149,9 @@ Task("UploadCoverage")
                     .Append($"--commitId {workflow.Sha}") //
                     .Append($"--commitBranch {workflow.Ref}")
                     .Append($"--serviceNumber {workflow.RunNumber}")
-                    .Append($"--jobId {workflow.RunId}")
-                    .Append("--serviceName github")
-                    .Append("--dryrun");
+                    .Append($"--jobId {workflow.RunId}");
+                    // .Append("--serviceName github")
+                    // .Append("--dryrun");
 
                 if (BuildSystem.IsPullRequest)
                 {
