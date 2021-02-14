@@ -139,18 +139,27 @@ Task("UploadCoverage")
         var settings = new DotNetCoreToolSettings
         {
             DiagnosticOutput = true,
-            ArgumentCustomization = args => args
-                .Append($"--repoToken {coverallsToken}")
-                .Append("--lcov")
-                .Append("--useRelativePaths")
-                .Append("-i ./artifacts/lcov.info")
-                .Append($"--commitId {workflow.Sha}") //
-                .Append($"--commitBranch {workflow.Ref}")
-                .Append($"--serviceNumber {workflow.RunNumber}")
-                .Append($"--jobId {workflow.RunId}")
-                .Append($"--pullRequest {@event?["number"].ToString()}")
-                //.Append("--serviceName github")
-                //.Append("--dryrun")
+            ArgumentCustomization = args => 
+            { 
+                args
+                    .Append($"--repoToken {coverallsToken}")
+                    .Append("--lcov")
+                    .Append("--useRelativePaths")
+                    .Append("-i ./artifacts/lcov.info")
+                    .Append($"--commitId {workflow.Sha}") //
+                    .Append($"--commitBranch {workflow.Ref}")
+                    .Append($"--serviceNumber {workflow.RunNumber}")
+                    .Append($"--jobId {workflow.RunId}")
+                    .Append("--serviceName github")
+                    .Append("--dryrun");
+
+                if (BuildSystem.IsPullRequest)
+                {
+                    args.Append($"--pullRequest {@event["number"].ToString()}");
+                }
+
+                return args;
+            }
         };
 
         DotNetCoreTool("csmacnz.Coveralls", settings);
