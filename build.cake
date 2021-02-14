@@ -149,7 +149,7 @@ Task("UploadCoverage")
                 .Append($"--serviceNumber {workflow.RunNumber}")
                 .Append($"--jobId {workflow.RunId}")
                 .Append($"--pullRequest {@event?["number"].ToString()}")
-                .Append("--serviceName github_test")
+                //.Append("--serviceName github")
                 //.Append("--dryrun")
         };
 
