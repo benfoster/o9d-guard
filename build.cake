@@ -185,7 +185,8 @@ Task("PublishPackages")
         {
             DotNetCoreNuGetPush(package.ToString(), new DotNetCoreNuGetPushSettings {
                 ApiKey = apiKey,
-                Source = apiUrl
+                Source = apiUrl,
+                SkipDuplicate = true
             });
         }
     });
