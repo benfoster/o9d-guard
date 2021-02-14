@@ -27,6 +27,8 @@ namespace O9d.Guard
         [DebuggerStepThrough]
         public static T NotNull<T>(this T value, [NotNull] string name)
         {
+            string sql = "SELECT * FROM Customers where Name =" + name;
+            
             return value ?? throw new ArgumentNullException(name);
         }
     }
