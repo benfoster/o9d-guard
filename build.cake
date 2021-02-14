@@ -129,12 +129,11 @@ Task("UploadCoverage")
     {
         var workflow = BuildSystem.GitHubActions.Environment.Workflow;
 
-        PullRequestEvent @event = default;
+        Dictionary<string, object> @event = default;
         if (workflow.EventName == "pull_request")
         {
             string eventJson = System.IO.File.ReadAllText(workflow.EventPath); 
-            Information(eventJson);
-            @event = System.Text.Json.JsonSerializer.Deserialize<PullRequestEvent>(eventJson);
+            @event = System.Text.Json.JsonSerializer.Deserialize<Dictionary<string, object>>(eventJson);
         }
 
         var settings = new DotNetCoreToolSettings
@@ -148,7 +147,7 @@ Task("UploadCoverage")
                 .Append($"--commitId {workflow.Sha}") //
                 .Append($"--commitBranch {workflow.Ref}")
                 .Append($"--jobId {workflow.RunId}")
-                .Append($"--pullRequest {@event?.Number}")
+                .Append($"--pullRequest {@event?["number"].ToString()}")
                 .Append("--serviceName github")
                 //.Append("--commitAuthor benfoster")
                 //.Append("--commitMessage \"test commit\"")
@@ -167,9 +166,3 @@ Task("Default")
     .IsDependentOn("UploadCoverage");
 
 RunTarget(target);
-
-
-class PullRequestEvent
-{
-    public string Number { get;set; }
-}
