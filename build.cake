@@ -5,11 +5,12 @@
 // Install .NET Core Global tools.
 #tool "dotnet:?package=dotnet-reportgenerator-globaltool&version=4.8.5"
 #tool "dotnet:?package=coveralls.net&version=3.0.0"
-#tool nuget:?package=MSBuild.SonarQube.Runner.Tool&version=4.8.0
+#tool "dotnet:?package=dotnet-sonarscanner&version=5.0.4"
+//#tool nuget:?package=SonarQube.Scanner.DotNetCore.Tool&version=4.3.1
 
 // Install addins 
 #addin nuget:?package=Cake.Coverlet&version=2.5.1
-#addin nuget:?package=Cake.Sonar
+#addin nuget:?package=Cake.Sonar&version=1.1.25
 
  #r "System.Text.Json"
  #r "System.IO"
@@ -238,4 +239,3 @@ Task("Publish")
     .IsDependentOn("PublishPackages");
 
 RunTarget(target);
-
