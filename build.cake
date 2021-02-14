@@ -146,11 +146,9 @@ Task("UploadCoverage")
                 .Append("-i ./artifacts/lcov.info")
                 .Append($"--commitId {workflow.Sha}") //
                 .Append($"--commitBranch {workflow.Ref}")
-                .Append($"--jobId {workflow.RunNumber}")
+                .Append($"--jobId {workflow.RunId}")
                 .Append($"--pullRequest {@event?["number"].ToString()}")
-                //.Append("--serviceName github")
-                //.Append("--commitAuthor benfoster")
-                //.Append("--commitMessage \"test commit\"")
+                .Append("--serviceName github")
                 //.Append("--dryrun")
         };
 
