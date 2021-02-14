@@ -9,6 +9,10 @@
 // Install addins 
 #addin nuget:?package=Cake.Coverlet&version=2.5.1
 
+
+ #r "System.Text.Json"
+ #r "System.IO"
+
 ///////////////////////////////////////////////////////////////////////////////
 // ARGUMENTS
 ///////////////////////////////////////////////////////////////////////////////
@@ -124,27 +128,30 @@ Task("UploadCoverage")
     .WithCriteria(coverallsToken != null && BuildSystem.IsRunningOnGitHubActions)
     .Does(() => 
     {
-        // CI_NAME
-        // CI_BUILD_NUMBER
-        // CI_BUILD_URL
-        // CI_BRANCH
-        // CI_PULL_REQUEST (optional)
-        //var environment = BuildSystem.GitHubActions.Environment;
+        var workflow = BuildSystem.GitHubActions.Environment.Workflow;
+
+        PullRequestEvent @event = default;
+        if (workflow.EventName == "pull_request")
+        {
+            string eventJson = System.IO.File.ReadAllText(workflow.EventPath); 
+            @event = System.Text.Json.JsonSerializer.Deserialize<PullRequestEvent>(eventJson);
+        }
 
         var settings = new DotNetCoreToolSettings
         {
             DiagnosticOutput = true,
             ArgumentCustomization = args => args
-                .Append("--lcov")
-                .Append("-i ./artifacts/lcov.info")
                 .Append($"--repoToken {coverallsToken}")
-                //.Append("--useRelativePaths")
-                //.Append("--commitId ")
-                .Append($"--commitBranch {EnvironmentVariable("GITHUB_REF")}")
-                // .Append("--commitAuthor ")
-                // .Append("--commitMessage ")
-                .Append($"--jobId {EnvironmentVariable("GITHUB_RUN_NUMBER")}")
-                //.Append("--pullRequest ")
+                .Append("--lcov")
+                .Append("--useRelativePaths")
+                .Append("-i ./artifacts/lcov.info")
+                .Append($"--commitId {workflow.Sha}") //
+                .Append($"--commitBranch {workflow.Ref}")
+                .Append($"--jobId {workflow.RunId}")
+                .Append($"--pullRequest {@event?.Number}")
+                .Append("--serviceName github")
+                //.Append("--commitAuthor benfoster")
+                //.Append("--commitMessage \"test commit\"")
                 //.Append("--dryrun")
         };
 
@@ -161,3 +168,8 @@ Task("Default")
 
 RunTarget(target);
 
+
+class PullRequestEvent
+{
+    public string Number { get;set; }
+}
