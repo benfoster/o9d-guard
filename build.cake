@@ -5,9 +5,11 @@
 // Install .NET Core Global tools.
 #tool "dotnet:?package=dotnet-reportgenerator-globaltool&version=4.8.5"
 #tool "dotnet:?package=coveralls.net&version=3.0.0"
+#tool nuget:?package=MSBuild.SonarQube.Runner.Tool&version=4.8.0
 
 // Install addins 
 #addin nuget:?package=Cake.Coverlet&version=2.5.1
+#addin nuget:?package=Cake.Sonar
 
  #r "System.Text.Json"
  #r "System.IO"
@@ -19,12 +21,13 @@
 var target = Argument("target", "Default");
 var configuration = Argument("configuration", "Release");
 var artifactsPath = "./artifacts";
-var tempPath = "./artifacts/temp"; 
+var coveragePath = "./artifacts/coverage"; 
 var packFiles = "./src/**/*.csproj";
 var testFiles = "./test/**/*.csproj";
 var packages = "./artifacts/*.nupkg";
 
 var coverallsToken = EnvironmentVariable("COVERALLS_TOKEN");
+var sonarToken = EnvironmentVariable("SONAR_TOKEN");
 
 uint coverageThreshold = 80;
 
@@ -39,9 +42,9 @@ Setup(context =>
 
 Teardown(ctx =>
 {
-   if (DirectoryExists(tempPath))
+   if (DirectoryExists(coveragePath))
    {
-        DeleteDirectory(tempPath, new DeleteDirectorySettings 
+        DeleteDirectory(coveragePath, new DeleteDirectorySettings 
         {
             Recursive = true,
             Force = true
@@ -60,6 +63,34 @@ Task("Clean")
     {
         CleanDirectories(artifactsPath);
     });
+
+// https://diegogiacomelli.com.br/publishing-a-dotnet-core-project-to-sonarcloud-with-cake/
+Task("SonarBegin")
+    .WithCriteria(!string.IsNullOrEmpty(sonarToken))
+    .Does(() => 
+    {
+        SonarBegin(new SonarBeginSettings 
+        {
+            Key = "benfoster_o9d-guard",
+            //Branch = branch,
+            Organization = "benfoster",
+            Url = "https://sonarcloud.io",
+            Exclusions = "./test/**",
+            OpenCoverReportsPath = $"{coveragePath}/*.xml",
+            Login = sonarToken   
+        });
+    });
+
+Task("SonarEnd")
+    .WithCriteria(!string.IsNullOrEmpty(sonarToken))
+    .Does(() => 
+    {
+        SonarEnd(new SonarEndSettings
+        {
+            Login = sonarToken
+        });
+    });
+
 
 Task("Build")
    .Does(() => 
@@ -89,7 +120,7 @@ Task("Test")
             {
                 CollectCoverage = true,
                 CoverletOutputFormat = CoverletOutputFormat.opencover,
-                CoverletOutputDirectory = tempPath,
+                CoverletOutputDirectory = coveragePath,
                 CoverletOutputName = GenerateCoverageFileName(project),
                 Threshold = coverageThreshold,
             };
@@ -118,14 +149,14 @@ Task("Pack")
 Task("GenerateReports")
     .Does(() => 
     {
-        ReportGenerator(GetFiles($"{tempPath}/*.xml"), artifactsPath, new ReportGeneratorSettings
+        ReportGenerator(GetFiles($"{coveragePath}/*.xml"), artifactsPath, new ReportGeneratorSettings
         {
             ArgumentCustomization = args => args.Append("-reporttypes:lcov;HTMLSummary;TextSummary;")
         });
     });
 
 Task("UploadCoverage")
-    .WithCriteria(coverallsToken != null && BuildSystem.IsRunningOnGitHubActions)
+    .WithCriteria(!string.IsNullOrEmpty(coverallsToken) && BuildSystem.IsRunningOnGitHubActions)
     .Does(() => 
     {
         var workflow = BuildSystem.GitHubActions.Environment.Workflow;
@@ -193,14 +224,18 @@ Task("PublishPackages")
 
 Task("Default")
     .IsDependentOn("Clean")
+    .IsDependentOn("SonarBegin")
     .IsDependentOn("Build")
     .IsDependentOn("Test")
     .IsDependentOn("Pack")
     .IsDependentOn("GenerateReports")
-    .IsDependentOn("UploadCoverage");
+    .IsDependentOn("UploadCoverage")
+    .IsDependentOn("SonarEnd");
+
 
 Task("Publish")
     .IsDependentOn("Default")
     .IsDependentOn("PublishPackages");
 
 RunTarget(target);
+
