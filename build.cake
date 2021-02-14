@@ -9,6 +9,9 @@
 // Install addins 
 #addin nuget:?package=Cake.Coverlet&version=2.5.1
 
+ #r "System.Text.Json"
+ #r "System.IO"
+
 ///////////////////////////////////////////////////////////////////////////////
 // ARGUMENTS
 ///////////////////////////////////////////////////////////////////////////////
@@ -121,18 +124,33 @@ Task("GenerateReports")
     });
 
 Task("UploadCoverage")
-    .WithCriteria(coverallsToken != null)
+    .WithCriteria(coverallsToken != null && BuildSystem.IsRunningOnGitHubActions)
     .Does(() => 
     {
+        var workflow = BuildSystem.GitHubActions.Environment.Workflow;
+
+        Dictionary<string, object> @event = default;
+        if (workflow.EventName == "pull_request")
+        {
+            string eventJson = System.IO.File.ReadAllText(workflow.EventPath); 
+            @event = System.Text.Json.JsonSerializer.Deserialize<Dictionary<string, object>>(eventJson);
+        }
+
         var settings = new DotNetCoreToolSettings
         {
             DiagnosticOutput = true,
             ArgumentCustomization = args => args
-                .Append("--lcov")
-                .Append("-i ./artifacts/lcov.info")
                 .Append($"--repoToken {coverallsToken}")
+                .Append("--lcov")
                 .Append("--useRelativePaths")
-                .Append("--dryrun")
+                .Append("-i ./artifacts/lcov.info")
+                .Append($"--commitId {workflow.Sha}") //
+                .Append($"--commitBranch {workflow.Ref}")
+                .Append($"--serviceNumber {workflow.RunNumber}")
+                .Append($"--jobId {workflow.RunId}")
+                .Append($"--pullRequest {@event?["number"].ToString()}")
+                //.Append("--serviceName github")
+                //.Append("--dryrun")
         };
 
         DotNetCoreTool("csmacnz.Coveralls", settings);
@@ -147,4 +165,3 @@ Task("Default")
     .IsDependentOn("UploadCoverage");
 
 RunTarget(target);
-
