@@ -78,7 +78,8 @@ Task("SonarBegin")
             Url = "https://sonarcloud.io",
             Exclusions = "test/**",
             OpenCoverReportsPath = $"{coveragePath}/*.xml",
-            Login = sonarToken   
+            Login = sonarToken,
+            XUnitReportsPath = artifactsPath
         });
     });
 
@@ -105,24 +106,25 @@ Task("Build")
 Task("Test")
    .Does(() => 
    {
-        var testSettings = new DotNetCoreTestSettings 
-        {
-            NoBuild = true,
-            Configuration = configuration
-        };
-
-        string GenerateCoverageFileName(FilePath file)
-            => file.GetFilenameWithoutExtension() + ".opencover.xml";
-      
         foreach (var project in GetFiles(testFiles))
         {
+            var projectName = project.GetFilenameWithoutExtension();
+            
+            var testSettings = new DotNetCoreTestSettings 
+            {
+                NoBuild = true,
+                Configuration = configuration,
+                Loggers = { $"trx;LogFileName={projectName}.TestResults.trx" },
+                ResultsDirectory = artifactsPath
+            };
+            
             // https://github.com/Romanx/Cake.Coverlet
             var coverletSettings = new CoverletSettings 
             {
                 CollectCoverage = true,
                 CoverletOutputFormat = CoverletOutputFormat.opencover,
                 CoverletOutputDirectory = coveragePath,
-                CoverletOutputName = GenerateCoverageFileName(project),
+                CoverletOutputName = $"{projectName}.opencover.xml",
                 Threshold = coverageThreshold,
             };
             
