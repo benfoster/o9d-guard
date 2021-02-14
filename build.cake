@@ -9,7 +9,6 @@
 // Install addins 
 #addin nuget:?package=Cake.Coverlet&version=2.5.1
 
-
  #r "System.Text.Json"
  #r "System.IO"
 
@@ -134,6 +133,7 @@ Task("UploadCoverage")
         if (workflow.EventName == "pull_request")
         {
             string eventJson = System.IO.File.ReadAllText(workflow.EventPath); 
+            Information(eventJson);
             @event = System.Text.Json.JsonSerializer.Deserialize<PullRequestEvent>(eventJson);
         }
 
