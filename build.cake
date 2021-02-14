@@ -76,7 +76,7 @@ Task("SonarBegin")
             //Branch = branch,
             Organization = "benfoster",
             Url = "https://sonarcloud.io",
-            Exclusions = "./test/*",
+            Exclusions = "test/**",
             OpenCoverReportsPath = $"{coveragePath}/*.xml",
             Login = sonarToken   
         });
