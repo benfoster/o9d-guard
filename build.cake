@@ -142,7 +142,7 @@ Task("UploadCoverage")
             ArgumentCustomization = args => args
                 .Append($"--repoToken {coverallsToken}")
                 .Append("--lcov")
-                .Append("--useRelativePaths")
+                //.Append("--useRelativePaths")
                 .Append("-i ./artifacts/lcov.info")
                 .Append($"--commitId {workflow.Sha}") //
                 .Append($"--commitBranch {workflow.Ref}")
