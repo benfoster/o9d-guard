@@ -146,6 +146,7 @@ Task("UploadCoverage")
                 .Append("-i ./artifacts/lcov.info")
                 .Append($"--commitId {workflow.Sha}") //
                 .Append($"--commitBranch {workflow.Ref}")
+                .Append($"--serviceNumber {workflow.RunNumber}")
                 .Append($"--jobId {workflow.RunId}")
                 .Append($"--pullRequest {@event?["number"].ToString()}")
                 .Append("--serviceName github")
