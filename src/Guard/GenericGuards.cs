@@ -10,7 +10,7 @@ namespace O9d.Guard
     public static class GenericGuards
     {
         /// <summary>
-        /// Values that the provided <paramref name="value"/> is not null
+        /// Validates that the provided <paramref name="value"/> is not null
         /// </summary>
         /// <param name="value">The value to validate</param>
         /// <param name="name">The name of the argument</param>
