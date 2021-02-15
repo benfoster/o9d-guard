@@ -26,7 +26,7 @@ namespace O9d.Guard
         /// </example>
         [DebuggerStepThrough]
         public static T NotNull<T>(this T value, [NotNull] string name)
-        {
+        {           
             return value ?? throw new ArgumentNullException(name);
         }
     }
