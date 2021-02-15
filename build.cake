@@ -5,9 +5,11 @@
 // Install .NET Core Global tools.
 #tool "dotnet:?package=dotnet-reportgenerator-globaltool&version=4.8.5"
 #tool "dotnet:?package=coveralls.net&version=3.0.0"
+#tool "dotnet:?package=dotnet-sonarscanner&version=5.0.4"
 
 // Install addins 
 #addin nuget:?package=Cake.Coverlet&version=2.5.1
+#addin nuget:?package=Cake.Sonar&version=1.1.25
 
  #r "System.Text.Json"
  #r "System.IO"
@@ -19,11 +21,13 @@
 var target = Argument("target", "Default");
 var configuration = Argument("configuration", "Release");
 var artifactsPath = "./artifacts";
-var tempPath = "./artifacts/temp"; 
+var coveragePath = "./artifacts/coverage"; 
 var packFiles = "./src/**/*.csproj";
 var testFiles = "./test/**/*.csproj";
+var packages = "./artifacts/*.nupkg";
 
 var coverallsToken = EnvironmentVariable("COVERALLS_TOKEN");
+var sonarToken = EnvironmentVariable("SONAR_TOKEN");
 
 uint coverageThreshold = 0; // Evil
 
@@ -38,9 +42,9 @@ Setup(context =>
 
 Teardown(ctx =>
 {
-   if (DirectoryExists(tempPath))
+   if (DirectoryExists(coveragePath))
    {
-        DeleteDirectory(tempPath, new DeleteDirectorySettings 
+        DeleteDirectory(coveragePath, new DeleteDirectorySettings 
         {
             Recursive = true,
             Force = true
@@ -60,6 +64,32 @@ Task("Clean")
         CleanDirectories(artifactsPath);
     });
 
+Task("SonarBegin")
+    .WithCriteria(!string.IsNullOrEmpty(sonarToken))
+    .Does(() => 
+    {
+        SonarBegin(new SonarBeginSettings 
+        {
+            Key = "benfoster_o9d-guard",
+            Organization = "benfoster",
+            Url = "https://sonarcloud.io",
+            Exclusions = "test/**",
+            OpenCoverReportsPath = $"{coveragePath}/*.xml",
+            Login = sonarToken,
+            XUnitReportsPath = $"{artifactsPath}/*.trx",
+        });
+    });
+
+Task("SonarEnd")
+    .WithCriteria(!string.IsNullOrEmpty(sonarToken))
+    .Does(() => 
+    {
+        SonarEnd(new SonarEndSettings
+        {
+            Login = sonarToken
+        });
+    });
+
 Task("Build")
    .Does(() => 
    {
@@ -72,24 +102,25 @@ Task("Build")
 Task("Test")
    .Does(() => 
    {
-        var testSettings = new DotNetCoreTestSettings 
-        {
-            NoBuild = true,
-            Configuration = configuration
-        };
-
-        string GenerateCoverageFileName(FilePath file)
-            => file.GetFilenameWithoutExtension() + ".opencover.xml";
-      
         foreach (var project in GetFiles(testFiles))
         {
+            var projectName = project.GetFilenameWithoutExtension();
+            
+            var testSettings = new DotNetCoreTestSettings 
+            {
+                NoBuild = true,
+                Configuration = configuration,
+                Loggers = { $"trx;LogFileName={projectName}.TestResults.trx" },
+                ResultsDirectory = artifactsPath
+            };
+            
             // https://github.com/Romanx/Cake.Coverlet
             var coverletSettings = new CoverletSettings 
             {
                 CollectCoverage = true,
                 CoverletOutputFormat = CoverletOutputFormat.opencover,
-                CoverletOutputDirectory = tempPath,
-                CoverletOutputName = GenerateCoverageFileName(project),
+                CoverletOutputDirectory = coveragePath,
+                CoverletOutputName = $"{projectName}.opencover.xml",
                 Threshold = coverageThreshold,
             };
             
@@ -117,14 +148,14 @@ Task("Pack")
 Task("GenerateReports")
     .Does(() => 
     {
-        ReportGenerator(GetFiles($"{tempPath}/*.xml"), artifactsPath, new ReportGeneratorSettings
+        ReportGenerator(GetFiles($"{coveragePath}/*.xml"), artifactsPath, new ReportGeneratorSettings
         {
             ArgumentCustomization = args => args.Append("-reporttypes:lcov;HTMLSummary;TextSummary;")
         });
     });
 
 Task("UploadCoverage")
-    .WithCriteria(coverallsToken != null && BuildSystem.IsRunningOnGitHubActions)
+    .WithCriteria(!string.IsNullOrEmpty(coverallsToken) && BuildSystem.IsRunningOnGitHubActions)
     .Does(() => 
     {
         var workflow = BuildSystem.GitHubActions.Environment.Workflow;
@@ -165,12 +196,46 @@ Task("UploadCoverage")
         DotNetCoreTool("csmacnz.Coveralls", settings);
     });
 
+Task("PublishPackages")
+    .Does(() => 
+    {
+        // // Resolve the API key.
+        var apiKey = EnvironmentVariable("NUGET_API_KEY");
+        if(string.IsNullOrEmpty(apiKey)) {
+            throw new InvalidOperationException("Could not resolve NuGet API key.");
+        }
+
+        // Resolve the API url.
+        var apiUrl = EnvironmentVariable("NUGET_API_URL");
+        if(string.IsNullOrEmpty(apiUrl)) {
+            throw new InvalidOperationException("Could not resolve NuGet API url.");
+        }
+
+        foreach(var package in GetFiles(packages))
+        {
+            DotNetCoreNuGetPush(package.ToString(), new DotNetCoreNuGetPushSettings {
+                ApiKey = apiKey,
+                Source = apiUrl,
+                SkipDuplicate = true
+            });
+        }
+    });
+
 Task("Default")
     .IsDependentOn("Clean")
     .IsDependentOn("Build")
     .IsDependentOn("Test")
     .IsDependentOn("Pack")
-    .IsDependentOn("GenerateReports")
-    .IsDependentOn("UploadCoverage");
+    .IsDependentOn("GenerateReports");
+
+Task("CI")
+    .IsDependentOn("SonarBegin")
+    .IsDependentOn("Default")
+    .IsDependentOn("UploadCoverage")
+    .IsDependentOn("SonarEnd");
+
+Task("Publish")
+    .IsDependentOn("CI")
+    .IsDependentOn("PublishPackages");
 
 RunTarget(target);

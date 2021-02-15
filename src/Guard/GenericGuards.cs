@@ -1,4 +1,5 @@
 using System;
+using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 
 namespace O9d.Guard
@@ -23,8 +24,9 @@ namespace O9d.Guard
         /// _customer = customer.NotNull(nameof(customer));
         /// </code>
         /// </example>
+        [DebuggerStepThrough]
         public static T NotNull<T>(this T value, [NotNull] string name)
-        {
+        {           
             return value ?? throw new ArgumentNullException(name);
         }
     }
