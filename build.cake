@@ -6,7 +6,6 @@
 #tool "dotnet:?package=dotnet-reportgenerator-globaltool&version=4.8.5"
 #tool "dotnet:?package=coveralls.net&version=3.0.0"
 #tool "dotnet:?package=dotnet-sonarscanner&version=5.0.4"
-//#tool nuget:?package=SonarQube.Scanner.DotNetCore.Tool&version=4.3.1
 
 // Install addins 
 #addin nuget:?package=Cake.Coverlet&version=2.5.1
@@ -65,7 +64,6 @@ Task("Clean")
         CleanDirectories(artifactsPath);
     });
 
-// https://diegogiacomelli.com.br/publishing-a-dotnet-core-project-to-sonarcloud-with-cake/
 Task("SonarBegin")
     .WithCriteria(!string.IsNullOrEmpty(sonarToken))
     .Does(() => 
@@ -73,7 +71,6 @@ Task("SonarBegin")
         SonarBegin(new SonarBeginSettings 
         {
             Key = "benfoster_o9d-guard",
-            //Branch = branch,
             Organization = "benfoster",
             Url = "https://sonarcloud.io",
             Exclusions = "test/**",
@@ -92,7 +89,6 @@ Task("SonarEnd")
             Login = sonarToken
         });
     });
-
 
 Task("Build")
    .Does(() => 
@@ -227,17 +223,19 @@ Task("PublishPackages")
 
 Task("Default")
     .IsDependentOn("Clean")
-    .IsDependentOn("SonarBegin")
     .IsDependentOn("Build")
     .IsDependentOn("Test")
     .IsDependentOn("Pack")
-    .IsDependentOn("GenerateReports")
+    .IsDependentOn("GenerateReports");
+
+Task("CI")
+    .IsDependentOn("SonarBegin")
+    .IsDependentOn("CI")
     .IsDependentOn("UploadCoverage")
     .IsDependentOn("SonarEnd");
 
-
 Task("Publish")
-    .IsDependentOn("Default")
+    .IsDependentOn("CI")
     .IsDependentOn("PublishPackages");
 
 RunTarget(target);
