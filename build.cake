@@ -29,7 +29,7 @@ var packages = "./artifacts/*.nupkg";
 var coverallsToken = EnvironmentVariable("COVERALLS_TOKEN");
 var sonarToken = EnvironmentVariable("SONAR_TOKEN");
 
-uint coverageThreshold = 80;
+uint coverageThreshold = 50;
 
 ///////////////////////////////////////////////////////////////////////////////
 // SETUP / TEARDOWN
@@ -111,7 +111,7 @@ Task("Test")
                 CoverletOutputFormat = CoverletOutputFormat.opencover,
                 CoverletOutputDirectory = coveragePath,
                 CoverletOutputName = $"{projectName}.opencover.xml",
-                Threshold = coverageThreshold,
+                Threshold = coverageThreshold
             };
             
             DotNetCoreTest(project.ToString(), testSettings, coverletSettings);
