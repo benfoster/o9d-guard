@@ -230,7 +230,7 @@ Task("Default")
 
 Task("CI")
     .IsDependentOn("SonarBegin")
-    .IsDependentOn("CI")
+    .IsDependentOn("Default")
     .IsDependentOn("UploadCoverage")
     .IsDependentOn("SonarEnd");
 
