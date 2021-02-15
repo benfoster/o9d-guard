@@ -76,17 +76,7 @@ Task("SonarBegin")
             Exclusions = "test/**",
             OpenCoverReportsPath = $"{coveragePath}/*.xml",
             Login = sonarToken,
-            XUnitReportsPath = $"{artifactsPath}/*.trx",
-        });
-    });
-
-Task("SonarEnd")
-    .WithCriteria(!string.IsNullOrEmpty(sonarToken))
-    .Does(() => 
-    {
-        SonarEnd(new SonarEndSettings
-        {
-            Login = sonarToken
+            VsTestReportsPath = $"{artifactsPath}/*.TestResults.xml",
         });
     });
 
@@ -110,7 +100,7 @@ Task("Test")
             {
                 NoBuild = true,
                 Configuration = configuration,
-                Loggers = { $"trx;LogFileName={projectName}.TestResults.trx" },
+                Loggers = { $"trx;LogFileName={projectName}.TestResults.xml" },
                 ResultsDirectory = artifactsPath
             };
             
@@ -219,6 +209,16 @@ Task("PublishPackages")
                 SkipDuplicate = true
             });
         }
+    });
+
+Task("SonarEnd")
+    .WithCriteria(!string.IsNullOrEmpty(sonarToken))
+    .Does(() => 
+    {
+        SonarEnd(new SonarEndSettings
+        {
+            Login = sonarToken
+        });
     });
 
 Task("Default")
