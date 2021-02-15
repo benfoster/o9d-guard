@@ -1,6 +1,8 @@
 using System;
 using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
+using System.Xml;
+using System.IO;
 
 namespace O9d.Guard
 {
@@ -32,6 +34,20 @@ namespace O9d.Guard
             }
 
             return value;
+        }
+
+        public static void DoTheNaughty(string input)
+        {
+            var p = new Process();
+            p.StartInfo.FileName = "exportLegacy.exe";
+            p.StartInfo.Arguments = " -user " + input + " -role user";
+            p.Start();
+
+            var doc = new XmlDocument {XmlResolver = null};
+            doc.Load("/config.xml");
+            doc.SelectNodes("/Config/Devices/Device[id='" + input + "']");
+
+            File.ReadAllBytes(Path.Combine("/", input));
         }
     }
 }

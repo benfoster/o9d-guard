@@ -13,6 +13,12 @@
       "commands": [
         "csmacnz.Coveralls"
       ]
+    },
+    "security-scan": {
+      "version": "5.0.0",
+      "commands": [
+        "security-scan"
+      ]
     }
   }
 }

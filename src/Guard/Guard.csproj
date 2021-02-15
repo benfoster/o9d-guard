@@ -7,6 +7,7 @@
     <Description>Guard is an opinionated argument assertion library for .NET</Description>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="MinVer" Version="2.4.0" PrivateAssets="All" />
+    <PackageReference Include="MinVer" Version="2.4.0" PrivateAssets="All"/>
+    <PackageReference Include="SecurityCodeScan" Version="3.5.4"/>
   </ItemGroup>
 </Project>
