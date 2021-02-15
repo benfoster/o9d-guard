@@ -76,7 +76,7 @@ Task("SonarBegin")
             Exclusions = "test/**",
             OpenCoverReportsPath = $"{coveragePath}/*.xml",
             Login = sonarToken,
-            TestReportPaths = $"{artifactsPath}/*.TestResults.xml",
+            VsTestReportsPath = $"{artifactsPath}/*.TestResults.xml",
         });
     });
 
@@ -100,7 +100,7 @@ Task("Test")
             {
                 NoBuild = true,
                 Configuration = configuration,
-                Loggers = { $"junit;LogFileName={projectName}.TestResults.xml" },
+                Loggers = { $"trx;LogFileName={projectName}.TestResults.xml" },
                 ResultsDirectory = artifactsPath
             };
             
