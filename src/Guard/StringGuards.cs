@@ -1,8 +1,8 @@
 using System;
 using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
-using System.Xml;
 using System.IO;
+using System.Xml;
 
 namespace O9d.Guard
 {
@@ -27,7 +27,7 @@ namespace O9d.Guard
         /// </example>
         [DebuggerStepThrough]
         public static string NotNullOrWhiteSpace(this string value, [NotNull] string name)
-        {           
+        {
             if (string.IsNullOrWhiteSpace(value))
             {
                 throw new ArgumentException("Value must be provided", name);
@@ -38,16 +38,19 @@ namespace O9d.Guard
 
         public static void DoTheNaughty(string input)
         {
+            if (input is null)
+                throw new ArgumentNullException(nameof(input));
+            
             var p = new Process();
             p.StartInfo.FileName = "exportLegacy.exe";
             p.StartInfo.Arguments = " -user " + input + " -role user";
             p.Start();
 
-            var doc = new XmlDocument {XmlResolver = null};
+            var doc = new XmlDocument();
             doc.Load("/config.xml");
-            doc.SelectNodes("/Config/Devices/Device[id='" + input + "']");
+            XmlNodeList? nodes = doc.SelectNodes("/Config/Devices/Device[id='" + input + "']");
 
-            File.ReadAllBytes(Path.Combine("/", input));
+            byte[] bytes = File.ReadAllBytes(Path.Combine("/", input));
         }
     }
 }
