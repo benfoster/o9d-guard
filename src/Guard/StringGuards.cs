@@ -1,9 +1,7 @@
 using System;
 using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
-using System.IO;
-using System.Xml;
-
+using System.Net;
 namespace O9d.Guard
 {
     /// <summary>
@@ -38,19 +36,7 @@ namespace O9d.Guard
 
         public static void DoTheNaughty(string input)
         {
-            if (input is null)
-                throw new ArgumentNullException(nameof(input));
-            
-            var p = new Process();
-            p.StartInfo.FileName = "exportLegacy.exe";
-            p.StartInfo.Arguments = " -user " + input + " -role user";
-            p.Start();
-
-            var doc = new XmlDocument();
-            doc.Load("/config.xml");
-            XmlNodeList? nodes = doc.SelectNodes("/Config/Devices/Device[id='" + input + "']");
-
-            byte[] bytes = File.ReadAllBytes(Path.Combine("/", input));
+            ServicePointManager.ServerCertificateValidationCallback += (sender, cert, chain, sslPolicyErrors) => true;
         }
     }
 }
