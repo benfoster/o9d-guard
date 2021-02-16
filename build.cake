@@ -111,7 +111,7 @@ Task("Test")
                 CoverletOutputFormat = CoverletOutputFormat.opencover,
                 CoverletOutputDirectory = coveragePath,
                 CoverletOutputName = $"{projectName}.opencover.xml"
-                //Threshold = coverageThreshold
+                Threshold = coverageThreshold
             };
             
             DotNetCoreTest(project.ToString(), testSettings, coverletSettings);
