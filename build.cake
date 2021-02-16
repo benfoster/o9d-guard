@@ -110,7 +110,7 @@ Task("Test")
                 CollectCoverage = true,
                 CoverletOutputFormat = CoverletOutputFormat.opencover,
                 CoverletOutputDirectory = coveragePath,
-                CoverletOutputName = $"{projectName}.opencover.xml"
+                CoverletOutputName = $"{projectName}.opencover.xml",
                 Threshold = coverageThreshold
             };
             
