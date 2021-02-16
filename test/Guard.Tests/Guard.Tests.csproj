@@ -17,7 +17,6 @@
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
     <PackageReference Include="Shouldly" Version="4.0.3"/>
-    <PackageReference Include="JunitXml.TestLogger" Version="2.1.81"/>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\src\Guard\Guard.csproj"/>
