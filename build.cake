@@ -81,13 +81,13 @@ Task("SonarBegin")
     });
 
 Task("Build")
-   .Does(() => 
-   {
-      DotNetCoreBuild("Guard.sln", new DotNetCoreBuildSettings 
-      {
-         Configuration = configuration
-      });
-   });
+    .Does(() => 
+    {
+        DotNetCoreBuild("Guard.sln", new DotNetCoreBuildSettings 
+        {
+            Configuration = configuration
+        });
+    });
 
 Task("Test")
    .Does(() => 

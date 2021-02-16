@@ -25,7 +25,7 @@ namespace O9d.Guard
         /// </example>
         [DebuggerStepThrough]
         public static string NotNullOrWhiteSpace(this string value, [NotNull] string name)
-        {           
+        {
             if (string.IsNullOrWhiteSpace(value))
             {
                 throw new ArgumentException("Value must be provided", name);
