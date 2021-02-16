@@ -1,7 +1,7 @@
 using System;
 using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
-using System.Net;
+
 namespace O9d.Guard
 {
     /// <summary>
@@ -32,11 +32,6 @@ namespace O9d.Guard
             }
 
             return value;
-        }
-
-        public static void DoTheNaughty(string input)
-        {
-            ServicePointManager.ServerCertificateValidationCallback += (sender, cert, chain, sslPolicyErrors) => true;
         }
     }
 }
