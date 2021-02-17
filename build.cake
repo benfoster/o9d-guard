@@ -157,36 +157,36 @@ Task("UploadCoverage")
             @event = System.Text.Json.JsonSerializer.Deserialize<Dictionary<string, object>>(eventJson);
         }
 
-        var toolExecutable = "csmacnz.Coveralls";
-
-        var settings = new DotNetCoreToolSettings
-        {
-            DiagnosticOutput = true,
-            ToolPath = Context.Tools.Resolve(toolExecutable),
-            ArgumentCustomization = args => 
-            { 
-                args
+        var args = new ProcessArgumentBuilder()
                     .Append($"--repoToken {coverallsToken}")
                     .Append("--lcov")
                     .Append("--useRelativePaths")
                     .Append("-i ./artifacts/lcov.info")
-                    .Append($"--commitId {workflow.Sha}") //
+                    .Append($"--commitId {workflow.Sha}") 
                     .Append($"--commitBranch {workflow.Ref}")
                     .Append($"--serviceNumber {workflow.RunNumber}")
                     .Append($"--jobId {workflow.RunId}");
-                    // .Append("--serviceName github")
-                    // .Append("--dryrun");
+                    //.Append("--serviceName github")
+                    //.Append("--dryrun");
 
-                if (BuildSystem.IsPullRequest)
-                {
-                    args.Append($"--pullRequest {@event["number"].ToString()}");
-                }
+        if (BuildSystem.IsPullRequest)
+        {
+            args.Append($"--pullRequest {@event["number"].ToString()}");
+        }
 
-                return args;
-            }
-        };
+        var settings = new ProcessSettings { Arguments = args };
 
-        DotNetCoreTool(toolExecutable, settings);
+        // We have to start the process manually since the cake addin forces us to provide 
+        // a format enum which currently doesn't include lcov
+        if (StartProcess(
+            Context.Tools.Resolve("csmacnz.Coveralls")
+                ?? Context.Tools.Resolve("csmacnz.coveralls.exe")
+                ?? throw new Exception("Failed to resolve Coveralls shim."),
+            settings
+            ) != 0)
+        {
+            throw new Exception("Failed to execute Coveralls.");
+        }
     });
 
 Task("PublishPackages")
