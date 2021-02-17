@@ -157,9 +157,12 @@ Task("UploadCoverage")
             @event = System.Text.Json.JsonSerializer.Deserialize<Dictionary<string, object>>(eventJson);
         }
 
+        var toolExecutable = "csmacnz.Coveralls";
+
         var settings = new DotNetCoreToolSettings
         {
             DiagnosticOutput = true,
+            ToolPath = Context.Tools.Resolve(toolExecutable),
             ArgumentCustomization = args => 
             { 
                 args
@@ -183,7 +186,7 @@ Task("UploadCoverage")
             }
         };
 
-        DotNetCoreTool("csmacnz.Coveralls", settings);
+        DotNetCoreTool(toolExecutable, settings);
     });
 
 Task("PublishPackages")
