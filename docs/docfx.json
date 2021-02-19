@@ -27,7 +27,6 @@
       },
       {
         "files": [
-          "articles/**/*.md",
           "*.md",
           "toc.yml"
         ]
@@ -36,7 +35,7 @@
     "resource": [
       {
         "files": [
-          "articles/images/**"
+          "docs/images/**"
         ]
       }
     ],
