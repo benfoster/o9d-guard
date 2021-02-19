@@ -6,10 +6,12 @@
 #tool "dotnet:?package=dotnet-reportgenerator-globaltool&version=4.8.5"
 #tool "dotnet:?package=coveralls.net&version=3.0.0"
 #tool "dotnet:?package=dotnet-sonarscanner&version=5.0.4"
+#tool nuget:?package=docfx.console&version=2.56.6
 
 // Install addins 
 #addin nuget:?package=Cake.Coverlet&version=2.5.1
 #addin nuget:?package=Cake.Sonar&version=1.1.25
+#addin nuget:?package=Cake.DocFx&version=0.13.1
 
  #r "System.Text.Json"
  #r "System.IO"
@@ -214,6 +216,12 @@ Task("PublishPackages")
         }
     });
 
+Task("GenerateDocs")
+    .Does(() => 
+    {
+        DocFx("./docs/docfx.json");
+    });
+
 Task("SonarEnd")
     .WithCriteria(!string.IsNullOrEmpty(sonarToken))
     .Does(() => 
@@ -235,7 +243,8 @@ Task("CI")
     .IsDependentOn("SonarBegin")
     .IsDependentOn("Default")
     .IsDependentOn("UploadCoverage")
-    .IsDependentOn("SonarEnd");
+    .IsDependentOn("SonarEnd")
+    .IsDependentOn("GenerateDocs");
 
 Task("Publish")
     .IsDependentOn("CI")
