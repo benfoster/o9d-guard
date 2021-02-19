@@ -15,7 +15,7 @@ Guard is a guard/assertions library for .NET that simplifies argument checking.
 
 The main purpose of this library was to demonstrate a number of best practices and tools for building and distributing .NET libraries. 
 
-### Without Guard:
+**Without Guard:**
 
 ```c#
 public Customer(string name, PhoneNumber phone)
@@ -30,7 +30,7 @@ public Customer(string name, PhoneNumber phone)
 }   
 ```
 
-### With Guard:
+**With Guard:**
 
 ```c#
 public Customer(string name, PhoneNumber phone)
@@ -54,7 +54,7 @@ Import the `O9d.Guard` namespace and start using the extension to validate argum
 
 ## Building locally 
 
-This project uses [Cake])(https://cakebuild.net/) to build, test and publish packages. 
+This project uses [Cake](https://cakebuild.net/) to build, test and publish packages. 
 
 Run `build.sh` (Mac/Linux) or `build.ps1` (Windows) To build and test the project. 
 
@@ -63,4 +63,3 @@ This will output NuGet packages and coverage reports in the `artifacts` director
 ## Contributing
 
 To contribute to O9d.Guard, fork the repository and raise a PR. If your change is substantial please [open an issue](https://github.com/benfoster/o9d-guard/issues) first to discuss your objective.
-
