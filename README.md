@@ -11,4 +11,56 @@
 [![GuardRails badge](https://api.guardrails.io/v2/badges/benfoster/o9d-guard.svg?token=461e73c50b8d8bfaf110ed2086379a8308a4fb8dd342334e79dcadd2dccf0f83&provider=github)](https://dashboard.guardrails.io/gh/benfoster/65586)
 [![CodeScene Code Health](https://codescene.io/projects/12974/status-badges/code-health)](https://codescene.io/projects/12974)
 
-Opinionated Guard Extensions for .NET
+Guard is a guard/assertions library for .NET that simplifies argument checking. 
+
+The main purpose of this library was to demonstrate a number of best practices and tools for building and distributing .NET libraries. 
+
+### Without Guard:
+
+```c#
+public Customer(string name, PhoneNumber phone)
+{
+    if (string.IsNullOrWhiteSpace(name))
+    {
+        throw new ArgumentException("Name must be provided required", nameof(name));
+    }
+
+    Name = name;
+    Phone = phone ?? throw new ArgumentNullException(nameof(phone));
+}   
+```
+
+### With Guard:
+
+```c#
+public Customer(string name, PhoneNumber phone)
+{
+    Name = name.NotNullOrWhiteSpace(nameof(name));
+    Phone = phone.NotNull(nameof(phone));
+}
+```
+
+## Quick Start
+
+Add the O9d.Guard package from [NuGet](https://www.nuget.org/packages/O9d.Guard)
+
+```
+dotnet add package O9d.Guard
+```
+
+If you want to use a pre-release package, include the `--prerelease` option.
+
+Import the `O9d.Guard` namespace and start using the extension to validate arguments.
+
+## Building locally 
+
+This project uses [Cake])(https://cakebuild.net/) to build, test and publish packages. 
+
+Run `build.sh` (Mac/Linux) or `build.ps1` (Windows) To build and test the project. 
+
+This will output NuGet packages and coverage reports in the `artifacts` directory.
+
+## Contributing
+
+To contribute to O9d.Guard, fork the repository and raise a PR. If your change is substantial please [open an issue](https://github.com/benfoster/o9d-guard/issues) first to discuss your objective.
+
