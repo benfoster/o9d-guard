@@ -5,20 +5,22 @@
   <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-    <title>Guard | Guard Documentation </title>
+    <title>Namespace O9d.Guard
+   | Guard Documentation </title>
     <meta name="viewport" content="width=device-width">
-    <meta name="title" content="Guard | Guard Documentation ">
+    <meta name="title" content="Namespace O9d.Guard
+   | Guard Documentation ">
     <meta name="generator" content="docfx 2.56.6.0">
     
-    <link rel="shortcut icon" href="favicon.ico">
-    <link rel="stylesheet" href="styles/docfx.vendor.css">
-    <link rel="stylesheet" href="styles/docfx.css">
-    <link rel="stylesheet" href="styles/main.css">
+    <link rel="shortcut icon" href="../favicon.ico">
+    <link rel="stylesheet" href="../styles/docfx.vendor.css">
+    <link rel="stylesheet" href="../styles/docfx.css">
+    <link rel="stylesheet" href="../styles/main.css">
     <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet"> 
-    <meta property="docfx:navrel" content="toc.html">
+    <meta property="docfx:navrel" content="../toc.html">
     <meta property="docfx:tocrel" content="toc.html">
     
-    <meta property="docfx:rel" content="">
+    <meta property="docfx:rel" content="../">
     
   </head>  <body data-spy="scroll" data-target="#affix" data-offset="120">
     <div id="wrapper">
@@ -34,8 +36,8 @@
                 <span class="icon-bar"></span>
               </button>
               
-              <a class="navbar-brand" href="index.html">
-                <img id="logo" class="svg" src="logo.svg" alt="">
+              <a class="navbar-brand" href="../index.html">
+                <img id="logo" class="svg" src="../logo.svg" alt="">
               </a>
             </div>
             <div class="collapse navbar-collapse" id="navbar">
@@ -67,30 +69,30 @@
         </div>
       </div>
       <div role="main" class="container body-content hide-when-search">
-        <div class="article row grid">
+        
+        <div class="sidenav hide-when-search">
+          <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
           <div class="col-md-10">
-            <article class="content wrap" id="_content" data-uid="">
-<h1 id="guard">Guard</h1>
-
-<p><a href="https://www.nuget.org/packages/O9d.Guard"><img src="https://img.shields.io/nuget/v/O9d.Guard.svg" alt="NuGet"></a>
-<a href="https://www.nuget.org/packages/O9d.Guard"><img src="https://img.shields.io/nuget/vpre/O9d.Guard?label=Pre-release" alt="NuGet"></a>
-<a href="https://www.nuget.org/packages/O9d.Guard"><img src="https://img.shields.io/nuget/dt/O9d.Guard.svg" alt="NuGet"></a>
-<a href="https://benfoster.mit-license.org/"><img src="https://img.shields.io/:license-mit-blue.svg" alt="License"></a></p>
-<h2 id="getting-started">Getting Started</h2>
-<p>Install the Guard package from <a href="https://www.nuget.org/packages/O9d.Guard">NuGet</a>:</p>
-<pre><code>dotnet add package O9d.Guard
-</code></pre>
-<p>Import the Guard Extensions into your classes:</p>
-<pre><code class="lang-c#">using O9d.Guard;
-</code></pre>
-<p>Enjoy cleaner argument checking:</p>
-<pre><code class="lang-c#">public Customer(string name, PhoneNumber phone)
-{
-    Name = name.NotNullOrWhiteSpace(nameof(name));
-    Phone = phone.NotNull(nameof(phone));
-}
-</code></pre>
-<p>To see the full list of extensions browse the <a class="xref" href="api/O9d.Guard.html">API Docs</a>.</p>
+            <article class="content wrap" id="_content" data-uid="O9d.Guard">
+  
+  <h1 id="O9d_Guard" data-uid="O9d.Guard" class="text-break">Namespace O9d.Guard
+  </h1>
+  <div class="markdown level0 summary"></div>
+  <div class="markdown level0 conceptual"></div>
+  <div class="markdown level0 remarks"></div>
+    <h3 id="classes">Classes
+  </h3>
+      <h4><a class="xref" href="O9d.Guard.GenericGuards.html">GenericGuards</a></h4>
+      <section><p>Guards for generic types</p>
+</section>
+      <h4><a class="xref" href="O9d.Guard.StringGuards.html">StringGuards</a></h4>
+      <section><p>Guards for strings</p>
+</section>
 </article>
           </div>
           
@@ -98,9 +100,6 @@
             <div class="sideaffix">
               <div class="contribution">
                 <ul class="nav">
-                  <li>
-                    <a href="https://github.com/benfoster/o9d-guard/blob/main/docs/index.md/#L1" class="contribution-link">Improve this Doc</a>
-                  </li>
                 </ul>
               </div>
               <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
@@ -126,8 +125,8 @@
       </footer>
     </div>
     
-    <script type="text/javascript" src="styles/docfx.vendor.js"></script>
-    <script type="text/javascript" src="styles/docfx.js"></script>
-    <script type="text/javascript" src="styles/main.js"></script>
+    <script type="text/javascript" src="../styles/docfx.vendor.js"></script>
+    <script type="text/javascript" src="../styles/docfx.js"></script>
+    <script type="text/javascript" src="../styles/main.js"></script>
   </body>
 </html>

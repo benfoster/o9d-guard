@@ -13,15 +13,60 @@
       "is_incremental": false
     },
     {
-      "log_codes": [
-        "UidNotFound"
-      ],
       "type": "Conceptual",
       "source_relative_path": "index.md",
       "output": {
         ".html": {
           "relative_path": "index.html",
-          "hash": "AlxI+te2Ihst/+KGrQdBBA=="
+          "hash": "KPbi0nLp4c0EzNzuY8Rs1g=="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/O9d.Guard.GenericGuards.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/O9d.Guard.GenericGuards.html",
+          "hash": "fnEpE2MMPtVQZ8D7PQcx5A=="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/O9d.Guard.StringGuards.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/O9d.Guard.StringGuards.html",
+          "hash": "RzNoOobrAE6d07LOFGjAyA=="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/O9d.Guard.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/O9d.Guard.html",
+          "hash": "ImfY8bONSIgB11MJFPQmwA=="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "Toc",
+      "source_relative_path": "obj/api/toc.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/toc.html",
+          "hash": "x9oRR56Py0jEh0rXyLeVXQ=="
         }
       },
       "is_incremental": false,
@@ -33,7 +78,7 @@
       "output": {
         ".html": {
           "relative_path": "toc.html",
-          "hash": "B+BOFaxQKjJtVfiu6tpn2Q=="
+          "hash": "i/HI+29gZYydRJvfLVuUcQ=="
         }
       },
       "is_incremental": false,
@@ -55,6 +100,12 @@
           "can_incremental": false,
           "incrementalPhase": "build",
           "total_file_count": 1,
+          "skipped_file_count": 0
+        },
+        "ManagedReferenceDocumentProcessor": {
+          "can_incremental": false,
+          "incrementalPhase": "build",
+          "total_file_count": 5,
           "skipped_file_count": 0
         },
         "TocDocumentProcessor": {
