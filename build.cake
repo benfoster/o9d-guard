@@ -7,11 +7,15 @@
 #tool "dotnet:?package=dotnet-sonarscanner&version=5.0.4"
 #tool nuget:?package=docfx.console&version=2.56.6
 
+// This is using an unofficial build of kudusync so that we can have a .Net Global tool version.  This was generated from this PR: https://github.com/projectkudu/KuduSync.NET/pull/27
+#tool dotnet:https://www.myget.org/F/cake-contrib/api/v3/index.json?package=KuduSync.Tool&version=1.5.4-g3916ad7218
+
 // Install addins 
 #addin nuget:?package=Cake.Coverlet&version=2.5.1
 #addin nuget:?package=Cake.Sonar&version=1.1.25
 #addin nuget:?package=Cake.DocFx&version=0.13.1
 #addin nuget:?package=Cake.Git&version=1.0.0
+#addin nuget:?package=Cake.Kudu&version=1.0.0
 
  #r "System.Text.Json"
  #r "System.IO"
@@ -31,6 +35,7 @@ DirectoryPath sitePath = "./artifacts/_site";
 
 var coverallsToken = EnvironmentVariable("COVERALLS_TOKEN");
 var sonarToken = EnvironmentVariable("SONAR_TOKEN");
+var gitHubToken = EnvironmentVariable("GITHUB_TOKEN");
 
 uint coverageThreshold = 50;
 
@@ -249,17 +254,37 @@ Task("PublishDocs")
     {
         // Get the current commit
         var sourceCommit = GitLogTip("./");
-        
-        var publishFolder = "./temp";
+        var publishFolder = $"./artifacts/temp-{DateTime.Now.ToString("yyyyMMdd_HHmmss")}";
         Information("Publishing Folder: {0}", publishFolder);
         Information("Getting publish branch...");
-        // GitClone(BuildParameters.Wyam.DeployRemote, publishFolder, new GitCloneSettings{ BranchName = "gh-pages" });
+        GitClone("https://github.com/benfoster/o9d-guard.git", publishFolder, new GitCloneSettings { BranchName = "gh-pages" });
 
-        // Information("Sync output files...");
-        // Kudu.Sync(BuildParameters.Paths.Directories.PublishedDocumentation, publishFolder, new KuduSyncSettings {
-        //     ArgumentCustomization = args=>args.Append("--ignore").AppendQuoted(".git;CNAME")
-        // });
+        Information("Sync output files...");
+        
+        Kudu.Sync(sitePath, publishFolder, new KuduSyncSettings {
+            ArgumentCustomization = args => args.Append("--ignore").AppendQuoted(".git;CNAME")
+        });
 
+        if (GitHasUncommitedChanges(publishFolder))
+        {
+            GitAddAll(publishFolder);
+            Information("Stage all changes...");
+
+            if (GitHasStagedChanges(publishFolder))
+            {
+                Information("Commit all changes...");
+                GitCommit(
+                    publishFolder,
+                    sourceCommit.Committer.Name,
+                    sourceCommit.Committer.Email,
+                    string.Format("Continuous Integration Publish: {0}\r\n{1}", sourceCommit.Sha, sourceCommit.Message)
+                );
+
+                Information("Pushing all changes...");
+                // TODO validate token exists
+                GitPush(publishFolder, EnvironmentVariable("GITHUB_TOKEN"), "x-oauth-basic", "gh-pages");
+            }
+        }
     });
 
 Task("Default")
@@ -281,3 +306,4 @@ Task("Publish")
     .IsDependentOn("PublishPackages");
 
 RunTarget(target);
+
