@@ -1,5 +1,10 @@
 # Guard
 
+[![NuGet](https://img.shields.io/nuget/v/O9d.Guard.svg)](https://www.nuget.org/packages/O9d.Guard)
+[![NuGet](https://img.shields.io/nuget/vpre/O9d.Guard?label=Pre-release)](https://www.nuget.org/packages/O9d.Guard)
+[![NuGet](https://img.shields.io/nuget/dt/O9d.Guard.svg)](https://www.nuget.org/packages/O9d.Guard)
+[![License](https://img.shields.io/:license-mit-blue.svg)](https://benfoster.mit-license.org/)
+
 ## Getting Started
 
 Install the Guard package from [NuGet](https://www.nuget.org/packages/O9d.Guard):
