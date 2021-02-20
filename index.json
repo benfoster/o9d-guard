@@ -17,6 +17,6 @@
   "index.html": {
     "href": "index.html",
     "title": "Guard | Guard Documentation",
-    "keywords": "Guard Getting Started Install the Guard package from NuGet : dotnet add package O9d.Guard Import the Guard Extensions into your classes: using O9d.Guard; Enjoy cleaner argument checking: public Customer(string name, PhoneNumber phone) { Name = name.NotNullOrWhiteSpace(nameof(name)); Phone = phone.NotNull(nameof(phone)); } To see the full list of extensions browse the API Docs ."
+    "keywords": "Guard Getting Started Install the Guard package from NuGet : dotnet add package O9d.Guard Import the Guard Extensions into your classes: using O9d.Guard; Enjoy cleaner argument checking: public Customer(string name, PhoneNumber phone) { Name = name.NotNullOrWhiteSpace(nameof(name)); Phone = phone.NotNull(nameof(phone)); } To see the full list of extensions browse the API Docs . A change"
   }
 }
