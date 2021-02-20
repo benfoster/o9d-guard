@@ -29,11 +29,12 @@ var coveragePath = "./artifacts/coverage";
 var packFiles = "./src/**/*.csproj";
 var testFiles = "./test/**/*.csproj";
 var packages = "./artifacts/*.nupkg";
-DirectoryPath sitePath = "./artifacts/_site";
+DirectoryPath sitePath = "./artifacts/docs";
 
 var coverallsToken = EnvironmentVariable("COVERALLS_TOKEN");
 var sonarToken = EnvironmentVariable("SONAR_TOKEN");
-var gitHubToken = EnvironmentVariable("GH_PAGES_ACCESS_TOKEN");
+var gitHubPagesToken = EnvironmentVariable("GH_PAGES_ACCESS_TOKEN");
+GitBranch currentBranch = GitBranchCurrent("./");
 
 uint coverageThreshold = 50;
 
@@ -43,7 +44,7 @@ uint coverageThreshold = 50;
 
 Setup(context =>
 {
-   Information($"Building Guard with configuration {configuration}");
+   Information($"Building Guard with configuration {configuration} on branch {currentBranch.FriendlyName}");
 });
 
 Teardown(ctx =>
@@ -249,14 +250,12 @@ Task("ServeDocs")
 
 Task("PublishDocs")
     .IsDependentOn("BuildDocs")
-    .WithCriteria(!string.IsNullOrEmpty(gitHubToken))
+    .WithCriteria(!string.IsNullOrEmpty(gitHubPagesToken) && currentBranch.FriendlyName == "main")
     .Does(() => 
     {
-        // TODO only run on the main branch
-        
         // Get the current commit
-        var sourceCommit = GitLogTip("./");
-        var publishFolder = $"./artifacts/temp-{DateTime.Now.ToString("yyyyMMdd_HHmmss")}";
+        var sourceCommit = currentBranch.Tip;
+        var publishFolder = $"./artifacts/docs-publish-{DateTime.Now.ToString("yyyyMMdd_HHmmss")}";
         Information("Publishing Folder: {0}", publishFolder);
         Information("Getting publish branch...");
         GitClone("https://github.com/benfoster/o9d-guard.git", publishFolder, new GitCloneSettings { BranchName = "gh-pages" });
@@ -293,7 +292,7 @@ Task("PublishDocs")
 
                 Information("Pushing all changes...");
                 
-                GitPush(publishFolder, gitHubToken, "x-oauth-basic", "gh-pages");
+                GitPush(publishFolder, gitHubPagesToken, "x-oauth-basic", "gh-pages");
             }
         }
     });
@@ -310,11 +309,11 @@ Task("CI")
     .IsDependentOn("SonarBegin")
     .IsDependentOn("Default")
     .IsDependentOn("UploadCoverage")
-    .IsDependentOn("SonarEnd")
-    .IsDependentOn("PublishDocs");
+    .IsDependentOn("SonarEnd");
 
 Task("Publish")
     .IsDependentOn("CI")
-    .IsDependentOn("PublishPackages");
+    .IsDependentOn("PublishPackages")
+    .IsDependentOn("PublishDocs");
 
 RunTarget(target);

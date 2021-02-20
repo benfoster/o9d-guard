@@ -45,7 +45,7 @@
       "_enableSearch": true
     },
     "markdownEngineName": "markdig",
-    "dest": "../artifacts/_site",
+    "dest": "../artifacts/docs",
     "template": [
       "default",
       "templates/material"
