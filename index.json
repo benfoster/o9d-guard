@@ -1,0 +1,22 @@
+{
+  "api/O9d.Guard.GenericGuards.html": {
+    "href": "api/O9d.Guard.GenericGuards.html",
+    "title": "Class GenericGuards | Guard Documentation",
+    "keywords": "Class GenericGuards Guards for generic types Inheritance Object GenericGuards Namespace : O9d.Guard Assembly : O9d.Guard.dll Syntax public static class GenericGuards : object Methods | Improve this Doc View Source NotNull<T>(T, String) Validates that the provided value is not null Declaration public static T NotNull<T>(this T value, string name) Parameters Type Name Description T value The value to validate String name The name of the argument Returns Type Description T The value of value if it is not null Type Parameters Name Description T The type Examples _customer = customer.NotNull(nameof(customer));"
+  },
+  "api/O9d.Guard.html": {
+    "href": "api/O9d.Guard.html",
+    "title": "Namespace O9d.Guard | Guard Documentation",
+    "keywords": "Namespace O9d.Guard Classes GenericGuards Guards for generic types StringGuards Guards for strings"
+  },
+  "api/O9d.Guard.StringGuards.html": {
+    "href": "api/O9d.Guard.StringGuards.html",
+    "title": "Class StringGuards | Guard Documentation",
+    "keywords": "Class StringGuards Guards for strings This class contains argument checks for strings. Inheritance Object StringGuards Namespace : O9d.Guard Assembly : O9d.Guard.dll Syntax public static class StringGuards : object Methods | Improve this Doc View Source NotNullOrWhiteSpace(String, String) Values that the provided value is not null, empty, or whitespace Declaration public static string NotNullOrWhiteSpace(this string value, string name) Parameters Type Name Description String value The value to validate String name The name of the argument Returns Type Description String The value of value if it is not null, empty or whitespace Examples public Customer(string name) { Name = name.NotNullOrWhiteSpace(nameof(name)); }"
+  },
+  "index.html": {
+    "href": "index.html",
+    "title": "Guard | Guard Documentation",
+    "keywords": "Guard Getting Started Install the Guard package from NuGet : dotnet add package O9d.Guard Import the Guard Extensions into your classes: using O9d.Guard; Enjoy cleaner argument checking: public Customer(string name, PhoneNumber phone) { Name = name.NotNullOrWhiteSpace(nameof(name)); Phone = phone.NotNull(nameof(phone)); } To see the full list of extensions browse the API Docs ."
+  }
+}
