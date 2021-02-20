@@ -1,4 +1,3 @@
-
 // Install modules
 #module nuget:?package=Cake.DotNetTool.Module&version=0.4.0
 
@@ -12,6 +11,7 @@
 #addin nuget:?package=Cake.Coverlet&version=2.5.1
 #addin nuget:?package=Cake.Sonar&version=1.1.25
 #addin nuget:?package=Cake.DocFx&version=0.13.1
+#addin nuget:?package=Cake.Git&version=1.0.0
 
  #r "System.Text.Json"
  #r "System.IO"
@@ -27,6 +27,7 @@ var coveragePath = "./artifacts/coverage";
 var packFiles = "./src/**/*.csproj";
 var testFiles = "./test/**/*.csproj";
 var packages = "./artifacts/*.nupkg";
+DirectoryPath sitePath = "./artifacts/_site";
 
 var coverallsToken = EnvironmentVariable("COVERALLS_TOKEN");
 var sonarToken = EnvironmentVariable("SONAR_TOKEN");
@@ -216,6 +217,16 @@ Task("PublishPackages")
         }
     });
 
+Task("SonarEnd")
+    .WithCriteria(!string.IsNullOrEmpty(sonarToken))
+    .Does(() => 
+    {
+        SonarEnd(new SonarEndSettings
+        {
+            Login = sonarToken
+        });
+    });
+
 Task("BuildDocs")
     .Does(() => 
     {
@@ -233,14 +244,22 @@ Task("ServeDocs")
         }
     });
 
-Task("SonarEnd")
-    .WithCriteria(!string.IsNullOrEmpty(sonarToken))
+Task("PublishDocs")
     .Does(() => 
     {
-        SonarEnd(new SonarEndSettings
-        {
-            Login = sonarToken
-        });
+        // Get the current commit
+        var sourceCommit = GitLogTip("./");
+        
+        var publishFolder = "./temp";
+        Information("Publishing Folder: {0}", publishFolder);
+        Information("Getting publish branch...");
+        // GitClone(BuildParameters.Wyam.DeployRemote, publishFolder, new GitCloneSettings{ BranchName = "gh-pages" });
+
+        // Information("Sync output files...");
+        // Kudu.Sync(BuildParameters.Paths.Directories.PublishedDocumentation, publishFolder, new KuduSyncSettings {
+        //     ArgumentCustomization = args=>args.Append("--ignore").AppendQuoted(".git;CNAME")
+        // });
+
     });
 
 Task("Default")
