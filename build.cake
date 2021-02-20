@@ -248,8 +248,12 @@ Task("ServeDocs")
     });
 
 Task("PublishDocs")
+    .IsDependentOn("BuildDocs")
+    .WithCriteria(!string.IsNullOrEmpty(gitHubToken))
     .Does(() => 
     {
+        // TODO only run on the main branch
+        
         // Get the current commit
         var sourceCommit = GitLogTip("./");
         var publishFolder = $"./artifacts/temp-{DateTime.Now.ToString("yyyyMMdd_HHmmss")}";
@@ -263,12 +267,21 @@ Task("PublishDocs")
             ArgumentCustomization = args => args.Append("--ignore").AppendQuoted(".git;CNAME")
         });
 
+        // var code = StartProcess("git",
+        //         new ProcessSettings
+        //         {
+        //             Arguments = new ProcessArgumentBuilder()
+        //                 .Append("status"),
+        //             WorkingDirectory = publishFolder
+        //         });
+
         if (GitHasUncommitedChanges(publishFolder))
         {
             GitAddAll(publishFolder);
             Information("Stage all changes...");
 
-            if (GitHasUncommitedChanges(publishFolder))
+            // Only considers modified files - https://github.com/cake-contrib/Cake_Git/issues/77
+            if (GitHasStagedChanges(publishFolder))
             {
                 Information("Commit all changes...");
                 GitCommit(
@@ -279,8 +292,8 @@ Task("PublishDocs")
                 );
 
                 Information("Pushing all changes...");
-                // TODO validate token exists
-                GitPush(publishFolder, gitHubToken, "x-oauth-basic", "gh-pages");
+                
+                GitPush(publishFolder, gitHubToken, "", "gh-pages");
             }
         }
     });
