@@ -1,4 +1,3 @@
-
 // Install modules
 #module nuget:?package=Cake.DotNetTool.Module&version=0.4.0
 
@@ -6,10 +5,15 @@
 #tool "dotnet:?package=dotnet-reportgenerator-globaltool&version=4.8.5"
 #tool "dotnet:?package=coveralls.net&version=3.0.0"
 #tool "dotnet:?package=dotnet-sonarscanner&version=5.0.4"
+#tool nuget:?package=docfx.console&version=2.56.6
+#tool nuget:?package=KuduSync.NET&version=1.5.3
 
 // Install addins 
 #addin nuget:?package=Cake.Coverlet&version=2.5.1
 #addin nuget:?package=Cake.Sonar&version=1.1.25
+#addin nuget:?package=Cake.DocFx&version=0.13.1
+#addin nuget:?package=Cake.Git&version=1.0.0
+#addin nuget:?package=Cake.Kudu&version=1.0.0
 
  #r "System.Text.Json"
  #r "System.IO"
@@ -25,9 +29,12 @@ var coveragePath = "./artifacts/coverage";
 var packFiles = "./src/**/*.csproj";
 var testFiles = "./test/**/*.csproj";
 var packages = "./artifacts/*.nupkg";
+DirectoryPath sitePath = "./artifacts/docs";
 
 var coverallsToken = EnvironmentVariable("COVERALLS_TOKEN");
 var sonarToken = EnvironmentVariable("SONAR_TOKEN");
+var gitHubPagesToken = EnvironmentVariable("GH_PAGES_ACCESS_TOKEN");
+GitBranch currentBranch = GitBranchCurrent("./");
 
 uint coverageThreshold = 50;
 
@@ -37,7 +44,7 @@ uint coverageThreshold = 50;
 
 Setup(context =>
 {
-   Information($"Building Guard with configuration {configuration}");
+   Information($"Building Guard with configuration {configuration} on branch {currentBranch.FriendlyName}");
 });
 
 Teardown(ctx =>
@@ -224,12 +231,79 @@ Task("SonarEnd")
         });
     });
 
+Task("BuildDocs")
+    .Does(() => 
+    {
+        DocFxBuild("./docs/docfx.json");
+    });
+
+Task("ServeDocs")
+    .IsDependentOn("BuildDocs")
+    .Does(() => 
+    {
+        using (var process = DocFxServeStart("./artifacts/_site"))
+        {
+            // Launch browser or other action based on the site
+            process.WaitForExit();
+        }
+    });
+
+Task("PublishDocs")
+    .IsDependentOn("BuildDocs")
+    .WithCriteria(!string.IsNullOrEmpty(gitHubPagesToken) && currentBranch.FriendlyName == "main")
+    .Does(() => 
+    {
+        // Get the current commit
+        var sourceCommit = currentBranch.Tip;
+        var publishFolder = $"./artifacts/docs-publish-{DateTime.Now.ToString("yyyyMMdd_HHmmss")}";
+        Information("Publishing Folder: {0}", publishFolder);
+        Information("Getting publish branch...");
+        GitClone("https://github.com/benfoster/o9d-guard.git", publishFolder, new GitCloneSettings { BranchName = "gh-pages" });
+
+        Information("Sync output files...");
+        
+        Kudu.Sync(sitePath, publishFolder, new KuduSyncSettings {
+            ArgumentCustomization = args => args.Append("--ignore").AppendQuoted(".git;CNAME")
+        });
+
+        // var code = StartProcess("git",
+        //         new ProcessSettings
+        //         {
+        //             Arguments = new ProcessArgumentBuilder()
+        //                 .Append("status"),
+        //             WorkingDirectory = publishFolder
+        //         });
+
+        if (GitHasUncommitedChanges(publishFolder))
+        {
+            GitAddAll(publishFolder);
+            Information("Stage all changes...");
+
+            // Only considers modified files - https://github.com/cake-contrib/Cake_Git/issues/77
+            if (GitHasStagedChanges(publishFolder))
+            {
+                Information("Commit all changes...");
+                GitCommit(
+                    publishFolder,
+                    sourceCommit.Committer.Name,
+                    sourceCommit.Committer.Email,
+                    string.Format("Continuous Integration Publish: {0}\r\n{1}", sourceCommit.Sha, sourceCommit.Message)
+                );
+
+                Information("Pushing all changes...");
+                
+                GitPush(publishFolder, gitHubPagesToken, "x-oauth-basic", "gh-pages");
+            }
+        }
+    });
+
 Task("Default")
     .IsDependentOn("Clean")
     .IsDependentOn("Build")
     .IsDependentOn("Test")
     .IsDependentOn("Pack")
-    .IsDependentOn("GenerateReports");
+    .IsDependentOn("GenerateReports")
+    .IsDependentOn("BuildDocs");
 
 Task("CI")
     .IsDependentOn("SonarBegin")
@@ -239,6 +313,7 @@ Task("CI")
 
 Task("Publish")
     .IsDependentOn("CI")
-    .IsDependentOn("PublishPackages");
+    .IsDependentOn("PublishPackages")
+    .IsDependentOn("PublishDocs");
 
 RunTarget(target);

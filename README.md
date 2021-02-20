@@ -61,3 +61,13 @@ This will output NuGet packages and coverage reports in the `artifacts` director
 ## Contributing
 
 To contribute to O9d.Guard, fork the repository and raise a PR. If your change is substantial please [open an issue](https://github.com/benfoster/o9d-guard/issues) first to discuss your objective.
+
+## Docs
+
+The Guard documentation is built using [DocFx](https://dotnet.github.io/docfx/). To build and serve the docs locally run:
+
+```
+./build.sh --target ServeDocs
+```
+
+This will serve the docs on http://localhost:8080.

@@ -1,0 +1,57 @@
+{
+  "metadata": [
+    {
+      "src": [
+        {
+          "src": "../",
+          "files": [
+            "src/**/*.csproj"
+          ],
+          "exclude": [
+            "**/bin/**",
+            "**/obj/**"
+          ]
+        }
+      ],
+      "dest": "obj/api"
+    }
+  ],
+  "build": {
+    "content": [
+      {
+        "files": [
+          "**/*.yml"
+        ],
+        "src": "obj/api",
+        "dest": "api"
+      },
+      {
+        "files": [
+          "*.md",
+          "toc.yml"
+        ]
+      }
+    ],
+    "resource": [
+      {
+        "files": [
+          "docs/images/**"
+        ]
+      }
+    ],
+    "overwrite": "specs/*.md",
+    "globalMetadata": {
+      "_appTitle": "Guard Documentation",
+      "_enableSearch": true
+    },
+    "markdownEngineName": "markdig",
+    "dest": "../artifacts/docs",
+    "template": [
+      "default",
+      "templates/material"
+    ],
+    "xrefService": [
+      "https://xref.docs.microsoft.com/query?uid={uid}"
+    ]
+  }
+}
