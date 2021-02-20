@@ -299,11 +299,11 @@ Task("CI")
     .IsDependentOn("Default")
     .IsDependentOn("UploadCoverage")
     .IsDependentOn("SonarEnd")
-    .IsDependentOn("BuildDocs");
+    .IsDependentOn("BuildDocs")
+    .IsDependentOn("PublishDocs");
 
 Task("Publish")
     .IsDependentOn("CI")
     .IsDependentOn("PublishPackages");
 
 RunTarget(target);
-
