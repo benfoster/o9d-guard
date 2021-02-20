@@ -268,7 +268,7 @@ Task("PublishDocs")
             GitAddAll(publishFolder);
             Information("Stage all changes...");
 
-            if (GitHasStagedChanges(publishFolder))
+            if (GitHasUncommitedChanges(publishFolder))
             {
                 Information("Commit all changes...");
                 GitCommit(
@@ -280,7 +280,7 @@ Task("PublishDocs")
 
                 Information("Pushing all changes...");
                 // TODO validate token exists
-                GitPush(publishFolder, EnvironmentVariable("GITHUB_TOKEN"), "x-oauth-basic", "gh-pages");
+                GitPush(publishFolder, gitHubToken, "x-oauth-basic", "gh-pages");
             }
         }
     });
