@@ -216,10 +216,21 @@ Task("PublishPackages")
         }
     });
 
-Task("GenerateDocs")
+Task("BuildDocs")
     .Does(() => 
     {
-        DocFx("./docs/docfx.json");
+        DocFxBuild("./docs/docfx.json");
+    });
+
+Task("ServeDocs")
+    .IsDependentOn("BuildDocs")
+    .Does(() => 
+    {
+        using (var process = DocFxServeStart("./artifacts/_site"))
+        {
+            // Launch browser or other action based on the site
+            process.WaitForExit();
+        }
     });
 
 Task("SonarEnd")
@@ -244,7 +255,7 @@ Task("CI")
     .IsDependentOn("Default")
     .IsDependentOn("UploadCoverage")
     .IsDependentOn("SonarEnd")
-    .IsDependentOn("GenerateDocs");
+    .IsDependentOn("BuildDocs");
 
 Task("Publish")
     .IsDependentOn("CI")
