@@ -293,7 +293,7 @@ Task("PublishDocs")
 
                 Information("Pushing all changes...");
                 
-                GitPush(publishFolder, gitHubToken, "", "gh-pages");
+                GitPush(publishFolder, gitHubToken, "x-oauth-basic", "gh-pages");
             }
         }
     });
