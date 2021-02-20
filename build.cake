@@ -235,10 +235,10 @@ Task("SonarEnd")
 Task("BuildDocs")
     .Does(() => 
     {
-        Information("Extracting API Metadata")
+        Information("Extracting API Metadata");
         DocFxMetadata(docFxConfig);
         
-        Information("Building Docs")
+        Information("Building Docs");
         DocFxBuild(docFxConfig);
     });
 
