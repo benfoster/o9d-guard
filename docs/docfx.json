@@ -46,6 +46,10 @@
     },
     "markdownEngineName": "markdig",
     "dest": "../artifacts/_site",
+    "template": [
+      "default",
+      "templates/material"
+    ],
     "xrefService": [
       "https://xref.docs.microsoft.com/query?uid={uid}"
     ]
