@@ -6,9 +6,7 @@
 #tool "dotnet:?package=coveralls.net&version=3.0.0"
 #tool "dotnet:?package=dotnet-sonarscanner&version=5.0.4"
 #tool nuget:?package=docfx.console&version=2.56.6
-
-// This is using an unofficial build of kudusync so that we can have a .Net Global tool version.  This was generated from this PR: https://github.com/projectkudu/KuduSync.NET/pull/27
-#tool dotnet:https://www.myget.org/F/cake-contrib/api/v3/index.json?package=KuduSync.Tool&version=1.5.4-g3916ad7218
+#tool nuget:?package=KuduSync.NET&version=1.5.3
 
 // Install addins 
 #addin nuget:?package=Cake.Coverlet&version=2.5.1
@@ -292,14 +290,14 @@ Task("Default")
     .IsDependentOn("Build")
     .IsDependentOn("Test")
     .IsDependentOn("Pack")
-    .IsDependentOn("GenerateReports");
+    .IsDependentOn("GenerateReports")
+    .IsDependentOn("BuildDocs");
 
 Task("CI")
     .IsDependentOn("SonarBegin")
     .IsDependentOn("Default")
     .IsDependentOn("UploadCoverage")
     .IsDependentOn("SonarEnd")
-    .IsDependentOn("BuildDocs")
     .IsDependentOn("PublishDocs");
 
 Task("Publish")
