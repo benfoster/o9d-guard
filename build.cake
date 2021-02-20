@@ -241,7 +241,7 @@ Task("ServeDocs")
     .IsDependentOn("BuildDocs")
     .Does(() => 
     {
-        using (var process = DocFxServeStart("./artifacts/_site"))
+        using (var process = DocFxServeStart(sitePath))
         {
             // Launch browser or other action based on the site
             process.WaitForExit();
