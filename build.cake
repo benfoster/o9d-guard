@@ -33,7 +33,7 @@ DirectoryPath sitePath = "./artifacts/_site";
 
 var coverallsToken = EnvironmentVariable("COVERALLS_TOKEN");
 var sonarToken = EnvironmentVariable("SONAR_TOKEN");
-var gitHubToken = EnvironmentVariable("GITHUB_TOKEN");
+var gitHubToken = EnvironmentVariable("GH_PAGES_ACCESS_TOKEN");
 
 uint coverageThreshold = 50;
 
