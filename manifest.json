@@ -13,12 +13,23 @@
       "is_incremental": false
     },
     {
+      "type": "Resource",
+      "source_relative_path": "img/logo.svg",
+      "output": {
+        "resource": {
+          "relative_path": "img/logo.svg"
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
       "type": "Conceptual",
       "source_relative_path": "index.md",
       "output": {
         ".html": {
           "relative_path": "index.html",
-          "hash": "KPbi0nLp4c0EzNzuY8Rs1g=="
+          "hash": "KdEnCzvdWRxzfFZH6hK7Ww=="
         }
       },
       "is_incremental": false,
@@ -30,7 +41,7 @@
       "output": {
         ".html": {
           "relative_path": "api/O9d.Guard.GenericGuards.html",
-          "hash": "fnEpE2MMPtVQZ8D7PQcx5A=="
+          "hash": "YE5Dp48Oayhx6Oei2h4NCw=="
         }
       },
       "is_incremental": false,
@@ -42,7 +53,7 @@
       "output": {
         ".html": {
           "relative_path": "api/O9d.Guard.StringGuards.html",
-          "hash": "RzNoOobrAE6d07LOFGjAyA=="
+          "hash": "2+juE3JnMRPEajKleH1ZUA=="
         }
       },
       "is_incremental": false,
@@ -54,7 +65,7 @@
       "output": {
         ".html": {
           "relative_path": "api/O9d.Guard.html",
-          "hash": "ImfY8bONSIgB11MJFPQmwA=="
+          "hash": "PkXbpYy0PnQb01c9RvKyBQ=="
         }
       },
       "is_incremental": false,
@@ -106,6 +117,13 @@
           "can_incremental": false,
           "incrementalPhase": "build",
           "total_file_count": 5,
+          "skipped_file_count": 0
+        },
+        "ResourceDocumentProcessor": {
+          "can_incremental": false,
+          "details": "Processor ResourceDocumentProcessor cannot support incremental build because the processor doesn't implement ISupportIncrementalDocumentProcessor interface.",
+          "incrementalPhase": "build",
+          "total_file_count": 0,
           "skipped_file_count": 0
         },
         "TocDocumentProcessor": {
