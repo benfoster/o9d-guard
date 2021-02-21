@@ -101,6 +101,12 @@ article h4 {
 
 /* NAVBAR */
 
+.navbar-brand {
+  width: 50px;
+  padding: 8px;
+  margin-right: 8px;
+}
+
 .navbar-brand > img {
   color: var(--header-ft-color);
 }

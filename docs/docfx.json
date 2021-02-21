@@ -35,14 +35,15 @@
     "resource": [
       {
         "files": [
-          "docs/images/**"
+          "img/**"
         ]
       }
     ],
     "overwrite": "specs/*.md",
     "globalMetadata": {
       "_appTitle": "Guard Documentation",
-      "_enableSearch": true
+      "_enableSearch": true,
+      "_appLogoPath": "img/logo.svg"
     },
     "markdownEngineName": "markdig",
     "dest": "../artifacts/docs",
