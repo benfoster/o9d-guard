@@ -5,8 +5,12 @@
     <AssemblyName>O9d.Guard</AssemblyName>
     <PackageId>O9d.Guard</PackageId>
     <Description>Guard is an opinionated argument assertion library for .NET</Description>
+    <PackageIcon>icon.png</PackageIcon>
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="MinVer" Version="2.4.0" PrivateAssets="All"/>
   </ItemGroup>
+  <ItemGroup>
+    <None Include="assets\icon.png" Pack="true" PackagePath="\"/>
+</ItemGroup>
 </Project>
