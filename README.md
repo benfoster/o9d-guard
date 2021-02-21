@@ -1,3 +1,5 @@
+<img alt="Guard Icon" src="src/Guard/assets/icon.png" width="64px" />
+
 # Guard
 
 [![NuGet](https://img.shields.io/nuget/v/O9d.Guard.svg)](https://www.nuget.org/packages/O9d.Guard)
