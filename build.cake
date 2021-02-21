@@ -30,6 +30,7 @@ var packFiles = "./src/**/*.csproj";
 var testFiles = "./test/**/*.csproj";
 var packages = "./artifacts/*.nupkg";
 DirectoryPath sitePath = "./artifacts/docs";
+var docFxConfig = "./docs/docfx.json";
 
 var coverallsToken = EnvironmentVariable("COVERALLS_TOKEN");
 var sonarToken = EnvironmentVariable("SONAR_TOKEN");
@@ -234,7 +235,11 @@ Task("SonarEnd")
 Task("BuildDocs")
     .Does(() => 
     {
-        DocFxBuild("./docs/docfx.json");
+        Information("Extracting API Metadata");
+        DocFxMetadata(docFxConfig);
+        
+        Information("Building Docs");
+        DocFxBuild(docFxConfig);
     });
 
 Task("ServeDocs")
