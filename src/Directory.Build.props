@@ -3,7 +3,4 @@
     <ItemGroup>
         <PackageReference Include="SecurityCodeScan.VS2019" Version="5.0.0" PrivateAssets="all" />
     </ItemGroup>
-    <PropertyGroup Condition="'$(Configuration)' != 'Debug'">
-        <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
-    </PropertyGroup>
 </Project>
