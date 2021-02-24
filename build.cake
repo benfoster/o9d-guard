@@ -45,6 +45,7 @@ uint coverageThreshold = 50;
 
 Setup(context =>
 {
+   BuildContext.Initialize(Context);
    Information($"Building Guard with configuration {configuration} on branch {currentBranch.FriendlyName}");
 });
 
@@ -198,25 +199,14 @@ Task("UploadCoverage")
     });
 
 Task("PublishPackages")
+    .WithCriteria(BuildContext.ShouldPublishToNuget)
     .Does(() => 
     {
-        // // Resolve the API key.
-        var apiKey = EnvironmentVariable("NUGET_API_KEY");
-        if(string.IsNullOrEmpty(apiKey)) {
-            throw new InvalidOperationException("Could not resolve NuGet API key.");
-        }
-
-        // Resolve the API url.
-        var apiUrl = EnvironmentVariable("NUGET_API_URL");
-        if(string.IsNullOrEmpty(apiUrl)) {
-            throw new InvalidOperationException("Could not resolve NuGet API url.");
-        }
-
         foreach(var package in GetFiles(packages))
         {
             DotNetCoreNuGetPush(package.ToString(), new DotNetCoreNuGetPushSettings {
-                ApiKey = apiKey,
-                Source = apiUrl,
+                ApiKey = BuildContext.NugetApiKey,
+                Source = BuildContext.NugetApiUrl,
                 SkipDuplicate = true
             });
         }
@@ -322,3 +312,39 @@ Task("Publish")
     .IsDependentOn("PublishDocs");
 
 RunTarget(target);
+
+
+public static class BuildContext
+{
+    public static bool IsTag { get; private set; }
+    public static string NugetApiUrl { get; private set; }
+    public static string NugetApiKey { get; private set; }
+
+    public static bool ShouldPublishToNuget
+        => !string.IsNullOrWhiteSpace(NugetApiUrl) && !string.IsNullOrWhiteSpace(NugetApiKey);
+        
+    public static void Initialize(ICakeContext context)
+    {
+        if (context.BuildSystem().IsRunningOnGitHubActions)
+        {
+            // https://github.com/cake-contrib/Cake.Recipe/blob/3ee5725b1cc0621f90205904848407515a2b62fd/Cake.Recipe/Content/github-actions.cake
+            var tempName = context.BuildSystem().GitHubActions.Environment.Workflow.Ref;
+            if (!string.IsNullOrEmpty(tempName) && tempName.IndexOf("tags/") >= 0)
+            {
+                IsTag = true;
+                //Name = tempName.Substring(tempName.LastIndexOf('/') + 1);
+            }
+        }
+
+        if (BuildContext.IsTag)
+        {
+            NugetApiUrl = context.EnvironmentVariable("NUGET_API_KEY");
+            NugetApiKey = context.EnvironmentVariable("NUGET_API_URL");
+        }
+        else
+        {
+            NugetApiUrl = context.EnvironmentVariable("NUGET_PRE_API_KEY");
+            NugetApiKey = context.EnvironmentVariable("NUGET_PRE_API_URL");
+        }
+    }
+}
