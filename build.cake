@@ -199,7 +199,7 @@ Task("UploadCoverage")
     });
 
 Task("PublishPackages")
-    .WithCriteria(BuildContext.ShouldPublishToNuget)
+    .WithCriteria(() => BuildContext.ShouldPublishToNuget)
     .Does(() => 
     {
         foreach(var package in GetFiles(packages))
@@ -292,6 +292,8 @@ Task("PublishDocs")
         }
     });
 
+Task("Dump").Does(() => BuildContext.PrintParameters(Context));
+
 Task("Default")
     .IsDependentOn("Clean")
     .IsDependentOn("Build")
@@ -321,7 +323,7 @@ public static class BuildContext
     public static string NugetApiKey { get; private set; }
 
     public static bool ShouldPublishToNuget
-        => !string.IsNullOrWhiteSpace(NugetApiUrl) && !string.IsNullOrWhiteSpace(NugetApiKey);
+        => !string.IsNullOrWhiteSpace(BuildContext.NugetApiUrl) && !string.IsNullOrWhiteSpace(BuildContext.NugetApiKey);
         
     public static void Initialize(ICakeContext context)
     {
@@ -346,5 +348,14 @@ public static class BuildContext
             NugetApiUrl = context.EnvironmentVariable("NUGET_PRE_API_KEY");
             NugetApiKey = context.EnvironmentVariable("NUGET_PRE_API_URL");
         }
+    }
+
+    public static void PrintParameters(ICakeContext context)
+    {
+        context.Information("Printing Build Parameters...");
+        context.Information("IsTag: {0}", IsTag);
+        context.Information("NugetApiUrl: {0}", NugetApiUrl);
+        context.Information("NugetApiKey: {0}", NugetApiKey);
+        context.Information("ShouldPublishToNuget: {0}", ShouldPublishToNuget);
     }
 }
