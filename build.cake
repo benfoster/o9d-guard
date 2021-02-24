@@ -340,13 +340,13 @@ public static class BuildContext
 
         if (BuildContext.IsTag)
         {
-            NugetApiUrl = context.EnvironmentVariable("NUGET_API_KEY");
-            NugetApiKey = context.EnvironmentVariable("NUGET_API_URL");
+            NugetApiUrl = context.EnvironmentVariable("NUGET_API_URL");
+            NugetApiKey = context.EnvironmentVariable("NUGET_API_KEY");
         }
         else
         {
-            NugetApiUrl = context.EnvironmentVariable("NUGET_PRE_API_KEY");
-            NugetApiKey = context.EnvironmentVariable("NUGET_PRE_API_URL");
+            NugetApiUrl = context.EnvironmentVariable("NUGET_PRE_API_URL");
+            NugetApiKey = context.EnvironmentVariable("NUGET_PRE_API_KEY");
         }
     }
 
