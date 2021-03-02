@@ -1,7 +1,8 @@
+<img alt="Guard Icon" src="src/Guard/assets/icon.png" width="64px" />
+
 # Guard
 
-[![NuGet](https://img.shields.io/nuget/v/O9d.Guard.svg)](https://www.nuget.org/packages/O9d.Guard)
-[![NuGet](https://img.shields.io/nuget/vpre/O9d.Guard?label=Pre-release)](https://www.nuget.org/packages/O9d.Guard)
+[![NuGet](https://img.shields.io/nuget/v/O9d.Guard.svg)](https://www.nuget.org/packages/O9d.Guard) 
 [![NuGet](https://img.shields.io/nuget/dt/O9d.Guard.svg)](https://www.nuget.org/packages/O9d.Guard)
 [![License](https://img.shields.io/:license-mit-blue.svg)](https://benfoster.mit-license.org/)
 
@@ -49,6 +50,16 @@ dotnet add package O9d.Guard
 If you want to use a pre-release package, include the `--prerelease` option.
 
 Import the `O9d.Guard` namespace and start using the extension to validate arguments.
+
+### Pre-release Packages
+
+Pre-release packages can be downloaded from [GitHub Packages](https://github.com/benfoster?tab=packages&repo_name=o9d-guard).
+
+```
+dotnet add package O9d.Guard --prerelease --source https://nuget.pkg.github.com/benfoster/index.json
+```
+
+[More information](https://docs.github.com/en/packages/guides/configuring-dotnet-cli-for-use-with-github-packages) on using GitHub packages with .NET.
 
 ## Building locally 
 

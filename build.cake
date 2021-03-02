@@ -30,6 +30,7 @@ var packFiles = "./src/**/*.csproj";
 var testFiles = "./test/**/*.csproj";
 var packages = "./artifacts/*.nupkg";
 DirectoryPath sitePath = "./artifacts/docs";
+var docFxConfig = "./docs/docfx.json";
 
 var coverallsToken = EnvironmentVariable("COVERALLS_TOKEN");
 var sonarToken = EnvironmentVariable("SONAR_TOKEN");
@@ -44,6 +45,7 @@ uint coverageThreshold = 50;
 
 Setup(context =>
 {
+   BuildContext.Initialize(Context);
    Information($"Building Guard with configuration {configuration} on branch {currentBranch.FriendlyName}");
 });
 
@@ -197,25 +199,14 @@ Task("UploadCoverage")
     });
 
 Task("PublishPackages")
+    .WithCriteria(() => BuildContext.ShouldPublishToNuget)
     .Does(() => 
     {
-        // // Resolve the API key.
-        var apiKey = EnvironmentVariable("NUGET_API_KEY");
-        if(string.IsNullOrEmpty(apiKey)) {
-            throw new InvalidOperationException("Could not resolve NuGet API key.");
-        }
-
-        // Resolve the API url.
-        var apiUrl = EnvironmentVariable("NUGET_API_URL");
-        if(string.IsNullOrEmpty(apiUrl)) {
-            throw new InvalidOperationException("Could not resolve NuGet API url.");
-        }
-
         foreach(var package in GetFiles(packages))
         {
             DotNetCoreNuGetPush(package.ToString(), new DotNetCoreNuGetPushSettings {
-                ApiKey = apiKey,
-                Source = apiUrl,
+                ApiKey = BuildContext.NugetApiKey,
+                Source = BuildContext.NugetApiUrl,
                 SkipDuplicate = true
             });
         }
@@ -234,7 +225,11 @@ Task("SonarEnd")
 Task("BuildDocs")
     .Does(() => 
     {
-        DocFxBuild("./docs/docfx.json");
+        Information("Extracting API Metadata");
+        DocFxMetadata(docFxConfig);
+        
+        Information("Building Docs");
+        DocFxBuild(docFxConfig);
     });
 
 Task("ServeDocs")
@@ -297,6 +292,8 @@ Task("PublishDocs")
         }
     });
 
+Task("Dump").Does(() => BuildContext.PrintParameters(Context));
+
 Task("Default")
     .IsDependentOn("Clean")
     .IsDependentOn("Build")
@@ -317,3 +314,48 @@ Task("Publish")
     .IsDependentOn("PublishDocs");
 
 RunTarget(target);
+
+
+public static class BuildContext
+{
+    public static bool IsTag { get; private set; }
+    public static string NugetApiUrl { get; private set; }
+    public static string NugetApiKey { get; private set; }
+
+    public static bool ShouldPublishToNuget
+        => !string.IsNullOrWhiteSpace(BuildContext.NugetApiUrl) && !string.IsNullOrWhiteSpace(BuildContext.NugetApiKey);
+        
+    public static void Initialize(ICakeContext context)
+    {
+        if (context.BuildSystem().IsRunningOnGitHubActions)
+        {
+            // https://github.com/cake-contrib/Cake.Recipe/blob/3ee5725b1cc0621f90205904848407515a2b62fd/Cake.Recipe/Content/github-actions.cake
+            var tempName = context.BuildSystem().GitHubActions.Environment.Workflow.Ref;
+            if (!string.IsNullOrEmpty(tempName) && tempName.IndexOf("tags/") >= 0)
+            {
+                IsTag = true;
+                //Name = tempName.Substring(tempName.LastIndexOf('/') + 1);
+            }
+        }
+
+        if (BuildContext.IsTag)
+        {
+            NugetApiUrl = context.EnvironmentVariable("NUGET_API_URL");
+            NugetApiKey = context.EnvironmentVariable("NUGET_API_KEY");
+        }
+        else
+        {
+            NugetApiUrl = context.EnvironmentVariable("NUGET_PRE_API_URL");
+            NugetApiKey = context.EnvironmentVariable("NUGET_PRE_API_KEY");
+        }
+    }
+
+    public static void PrintParameters(ICakeContext context)
+    {
+        context.Information("Printing Build Parameters...");
+        context.Information("IsTag: {0}", IsTag);
+        context.Information("NugetApiUrl: {0}", NugetApiUrl);
+        context.Information("NugetApiKey: {0}", NugetApiKey);
+        context.Information("ShouldPublishToNuget: {0}", ShouldPublishToNuget);
+    }
+}
