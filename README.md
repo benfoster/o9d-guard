@@ -12,7 +12,7 @@
 [![GuardRails badge](https://api.guardrails.io/v2/badges/benfoster/o9d-guard.svg?token=461e73c50b8d8bfaf110ed2086379a8308a4fb8dd342334e79dcadd2dccf0f83&provider=github)](https://dashboard.guardrails.io/gh/benfoster/65586)
 [![CodeScene Code Health](https://codescene.io/projects/12974/status-badges/code-health)](https://codescene.io/projects/12974)
 
-Guard is a guard/assertions library for .NET that simplifies argument checking. 
+Guard is an o[pinionate]d guard/assertions library for .NET that simplifies argument checking. 
 
 **Without Guard:**
 
@@ -47,7 +47,7 @@ Add the O9d.Guard package from [NuGet](https://www.nuget.org/packages/O9d.Guard)
 dotnet add package O9d.Guard
 ```
 
-If you want to use a pre-release package, include the `--prerelease` option.
+If you want to use a pre-release package, you can download them GitHub packages.
 
 Import the `O9d.Guard` namespace and start using the extension to validate arguments.
 
