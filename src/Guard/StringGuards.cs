@@ -24,7 +24,7 @@ namespace O9d.Guard
         /// </code>
         /// </example>
         [DebuggerStepThrough]
-        public static string NotNullOrWhiteSpace(this string value, [NotNull] string name)
+        public static string NotNullOrWhiteSpace([NotNull]this string value, string name)
         {
             if (string.IsNullOrWhiteSpace(value))
             {
