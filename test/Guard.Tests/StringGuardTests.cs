@@ -21,7 +21,7 @@ namespace O9d.Guard.Tests
             "value".NotNullOrWhiteSpace("name").ShouldBe("value");
         }
 
-#if NET5_0_OR_GREATER
+#if NET6_0_OR_GREATER
         [Fact]
         public void Can_implicitly_capture_param_name()
         {
