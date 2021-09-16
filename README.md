@@ -13,7 +13,7 @@
 [![CodeScene Code Health](https://codescene.io/projects/12974/status-badges/code-health)](https://codescene.io/projects/12974)
 
 Guard is an o[pinionate]d guard/assertions library for .NET that simplifies argument checking. 
-
+ 
 **Without Guard:**
 
 ```c#
