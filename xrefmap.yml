@@ -20,27 +20,30 @@ references:
   isSpec: "True"
   fullName: O9d.Guard.GenericGuards.NotNull
   nameWithType: GenericGuards.NotNull
-- uid: O9d.Guard.GenericGuards.NotNull``1(``0,System.String)
-  name: NotNull<T>(T, String)
-  href: api/O9d.Guard.GenericGuards.html#O9d_Guard_GenericGuards_NotNull__1___0_System_String_
-  commentId: M:O9d.Guard.GenericGuards.NotNull``1(``0,System.String)
-  name.vb: NotNull(Of T)(T, String)
-  fullName: O9d.Guard.GenericGuards.NotNull<T>(T, System.String)
-  fullName.vb: O9d.Guard.GenericGuards.NotNull(Of T)(T, System.String)
-  nameWithType: GenericGuards.NotNull<T>(T, String)
-  nameWithType.vb: GenericGuards.NotNull(Of T)(T, String)
+- uid: O9d.Guard.GenericGuards.NotNull``1(``0,System.Nullable{System.String})
+  name: NotNull<T>(T, Nullable<String>)
+  href: api/O9d.Guard.GenericGuards.html#O9d_Guard_GenericGuards_NotNull__1___0_System_Nullable_System_String__
+  commentId: M:O9d.Guard.GenericGuards.NotNull``1(``0,System.Nullable{System.String})
+  name.vb: NotNull(Of T)(T, Nullable(Of String))
+  fullName: O9d.Guard.GenericGuards.NotNull<T>(T, System.Nullable<System.String>)
+  fullName.vb: O9d.Guard.GenericGuards.NotNull(Of T)(T, System.Nullable(Of System.String))
+  nameWithType: GenericGuards.NotNull<T>(T, Nullable<String>)
+  nameWithType.vb: GenericGuards.NotNull(Of T)(T, Nullable(Of String))
 - uid: O9d.Guard.StringGuards
   name: StringGuards
   href: api/O9d.Guard.StringGuards.html
   commentId: T:O9d.Guard.StringGuards
   fullName: O9d.Guard.StringGuards
   nameWithType: StringGuards
-- uid: O9d.Guard.StringGuards.NotNullOrWhiteSpace(System.String,System.String)
-  name: NotNullOrWhiteSpace(String, String)
-  href: api/O9d.Guard.StringGuards.html#O9d_Guard_StringGuards_NotNullOrWhiteSpace_System_String_System_String_
-  commentId: M:O9d.Guard.StringGuards.NotNullOrWhiteSpace(System.String,System.String)
-  fullName: O9d.Guard.StringGuards.NotNullOrWhiteSpace(System.String, System.String)
-  nameWithType: StringGuards.NotNullOrWhiteSpace(String, String)
+- uid: O9d.Guard.StringGuards.NotNullOrWhiteSpace(System.String,System.Nullable{System.String})
+  name: NotNullOrWhiteSpace(String, Nullable<String>)
+  href: api/O9d.Guard.StringGuards.html#O9d_Guard_StringGuards_NotNullOrWhiteSpace_System_String_System_Nullable_System_String__
+  commentId: M:O9d.Guard.StringGuards.NotNullOrWhiteSpace(System.String,System.Nullable{System.String})
+  name.vb: NotNullOrWhiteSpace(String, Nullable(Of String))
+  fullName: O9d.Guard.StringGuards.NotNullOrWhiteSpace(System.String, System.Nullable<System.String>)
+  fullName.vb: O9d.Guard.StringGuards.NotNullOrWhiteSpace(System.String, System.Nullable(Of System.String))
+  nameWithType: StringGuards.NotNullOrWhiteSpace(String, Nullable<String>)
+  nameWithType.vb: StringGuards.NotNullOrWhiteSpace(String, Nullable(Of String))
 - uid: O9d.Guard.StringGuards.NotNullOrWhiteSpace*
   name: NotNullOrWhiteSpace
   href: api/O9d.Guard.StringGuards.html#O9d_Guard_StringGuards_NotNullOrWhiteSpace_
