@@ -8,7 +8,9 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
-
+    strategy:
+      matrix:
+        dotnet: [ '3.1.x', '5.0.x' ]
     steps:
       - uses: actions/checkout@v2
         with:
@@ -20,7 +22,7 @@ jobs:
       - name: Setup .NET
         uses: actions/setup-dotnet@v1
         with:
-          dotnet-version: 5.x
+          dotnet-version: ${{ matrix.dotnet }}
       - name: Restore tools
         run: dotnet tool restore
       - name: Run the build script
