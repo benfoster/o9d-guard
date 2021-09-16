@@ -1,6 +1,7 @@
 using System;
 using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
+using System.Runtime.CompilerServices;
 
 namespace O9d.Guard
 {
@@ -24,7 +25,7 @@ namespace O9d.Guard
         /// </code>
         /// </example>
         [DebuggerStepThrough]
-        public static string NotNullOrWhiteSpace([NotNull]this string value, string name)
+        public static string NotNullOrWhiteSpace([NotNull] this string value, [CallerArgumentExpression("value")] string? name = null)
         {
             if (string.IsNullOrWhiteSpace(value))
             {

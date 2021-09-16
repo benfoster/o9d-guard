@@ -1,6 +1,7 @@
 using System;
 using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
+using System.Runtime.CompilerServices;
 
 namespace O9d.Guard
 {
@@ -25,7 +26,7 @@ namespace O9d.Guard
         /// </code>
         /// </example>
         [DebuggerStepThrough]
-        public static T NotNull<T>([NotNull]this T value, string name)
+        public static T NotNull<T>([NotNull]this T? value, [CallerArgumentExpression("value")] string? name = null)
         {           
             return value ?? throw new ArgumentNullException(name);
         }

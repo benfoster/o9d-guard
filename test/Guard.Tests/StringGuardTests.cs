@@ -20,5 +20,14 @@ namespace O9d.Guard.Tests
         {
             "value".NotNullOrWhiteSpace("name").ShouldBe("value");
         }
+
+#if NET6_0_OR_GREATER
+        [Fact]
+        public void Can_implicitly_capture_param_name()
+        {
+            string? sut = "";
+            Assert.Throws<ArgumentException>(nameof(sut), () => sut.NotNullOrWhiteSpace());
+        }
+#endif
     }
 }
